@@ -67,7 +67,7 @@ def create_start_handler():
                 MessageHandler(Filters.regex('^Show Offers$'), pickup_offers),
                 MessageHandler(Filters.regex('^Show Needs$'), show_needs),
                 MessageHandler(Filters.regex('^Update on picked up needs$'), ask_for_needid),
-                MessageHandler(Filters.regex('^done$') | Filters.regex('^Done$'), done)
+                MessageHandler(Filters.regex('^Nothing$') | Filters.regex('^Done$'), done)
             ],
             REQUEST_TYPE: [
                 MessageHandler(Filters.text, request_description)
@@ -146,6 +146,10 @@ def create_start_handler():
             ],
             ESTIMATING_NEW_NEED_VALUE: [
                 MessageHandler(Filters.text, estimating_new_need_value)
+            ],
+            GO_MENU: [
+                MessageHandler(Filters.regex('^Menu$'), actions),
+                MessageHandler(Filters.regex('^Exit$'), done)
             ]
         },
         fallbacks = [

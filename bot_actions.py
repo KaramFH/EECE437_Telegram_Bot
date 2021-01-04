@@ -35,8 +35,8 @@ CHOOSING, PHONE_NUMBER, PHONE_NUMBER_YN, BIRTHDATE, BIRTHDATE_YN, ADDRESS, ADDRE
 OFFER_TYPE, OFFER_DESCRIPTION, OFFER_QUANTITY, OFFER_done, REQUEST_TYPE, REQUEST_DESCRIPTION, REQUEST_QUANTITY, REQCASH_ESTIMATE, \
 REQUEST_NOTED, NEW_VOLUNTEER, CHOOSE_VALUES_TO_UPDATE, U_ADDRESS, U_LOCATION, START_DELIVERY, DELIVERY_SUCCESS, DELIVERY_FAILURE, CHOOSE_DONATION, \
 CHOOSE_OFFER, SAVE_OFFER, ASK_OFFER_ID, DELIVER_NEEDS, UPDATE_NEED, ASK_NEED_ID,NEW_DONATION_TYPE, ESTIMATING_NEW_DONATION_VALUE, NEW_REQUEST_TYPE, \
-ESTIMATING_NEW_NEED_VALUE = \
-    range(39)
+ESTIMATING_NEW_NEED_VALUE, GO_MENU = \
+    range(40)
 
 
 def actions(update: Update, context: CallbackContext) -> int:
@@ -436,7 +436,7 @@ def request_noted(update: Update, context: CallbackContext)-> int:
     quantity = update.message.text
     request.append(quantity)
     print(request)
-    reply_keyboard = [['Request'], ['donate'], ['done']]
+    reply_keyboard = [['Menu'], ['Exit']]
     update.message.reply_text(
         'Your request has been well received. We are checking if there\'s someone who already donated the item you requested.',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
@@ -447,7 +447,7 @@ def request_noted(update: Update, context: CallbackContext)-> int:
     cash_value = 0
     quantity = request[4]
     Utils.add_need(user_id, donation_type_id, request_description, cash_value, quantity)
-    return ACTIONS
+    return GO_MENU
 
 ###########################################################################################################################################################
 # REGISTERING A VOLUNTEER
@@ -456,7 +456,7 @@ def request_noted(update: Update, context: CallbackContext)-> int:
 def new_volunteer( update: Update, context: CallbackContext ) -> int  :
     user = update.message.from_user
     user_id = user.id
-    if not Utils.user_is_volunteer(user_id):
+    if Utils.user_is_volunteer(user_id):
         update.message.reply_text(
         "You are already a volunteer."
         )
@@ -470,13 +470,14 @@ def new_volunteer( update: Update, context: CallbackContext ) -> int  :
         return NEW_VOLUNTEER
 
 def added_volunteer(update: Update, context: CallbackContext) -> int :
+    reply_keyboard = [['Menu'],['Exit']]
     update.message.reply_text(
         "God bless you, you have been added to the list of volunteers. If you want to start delivering items" \
         "to people in need, run the /deliver command.",
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     )
     Utils.add_volunteer(u1.UserID, u1.FirstName, u1.LastName, u1.ChatID)
-    return ConversationHandler.END
+    return GO_MENU
 
 ###########################################################################################################################################################
 # DELIVERING ITEMS A.Y

@@ -42,7 +42,7 @@ def add_volunteer(userID, firstname, lastname, chatid):
 
 
 def get_type_id_from_type_name(typename):
-    query = "SELECT donationtypeid FROM donationtype WHERE donationtypename = %s" % typename
+    query = "SELECT donationtypeid FROM donationtype WHERE donationtypename =" + str(typename)
     cr.execute(query)
     return cr.fetchall()[0]
 
