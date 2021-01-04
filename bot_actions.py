@@ -470,14 +470,13 @@ def new_volunteer( update: Update, context: CallbackContext ) -> int  :
         return NEW_VOLUNTEER
 
 def added_volunteer(update: Update, context: CallbackContext) -> int :
-    reply_keyboard = [['request task'], ['Adieus'],['done']]
     update.message.reply_text(
         "God bless you, you have been added to the list of volunteers. If you want to start delivering items" \
         "to people in need, run the /deliver command.",
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     )
     Utils.add_volunteer(u1.UserID, u1.FirstName, u1.LastName, u1.ChatID)
-    return ACTIONS
+    return ConversationHandler.END
 
 ###########################################################################################################################################################
 # DELIVERING ITEMS A.Y
