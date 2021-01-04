@@ -41,8 +41,15 @@ def add_volunteer(userID, firstname, lastname, chatid):
     print("done executing")
 
 
+def get_type_id_from_type_name(typename):
+    query = "SELECT donationtypeid FROM donationtype WHERE donationtypename = %s" % typename
+    cr.execute(query)
+    return cr.fetchall()[0]
+
 def add_offer(typename, userID, description ,QtAmount):
-    typeID  =  donation_types.get(typename)
+    # A.Y: I deleted the below line because we no longer need the donation_types
+    # typeID  =  donation_types.get(typename)
+    typeID = get_type_id_from_type_name(typename)
     print('lets see what we got...')
     print(typeID, userID, description, QtAmount)
     query = "INSERT into offering (userID, DonationTypeID, description, QuantityAmount, quantityremaining, isActive) " \
@@ -53,9 +60,10 @@ def add_offer(typename, userID, description ,QtAmount):
     mydb.commit()
     print("done executing")
 
-
-def add_need(userID , type, description, cashValue, quantityAmount):  # by default db sets active = 1
-    typeID = donation_types.get(type)
+def add_need(userID, donation_type_name, description, cashValue, quantityAmount):  # by default db sets active = 1
+    # A.Y on 3-1-2020 same as add_offer function above.
+    # typeID = donation_types.get(donation_type_name)
+    typeID = get_type_id_from_type_name(donation_type_name)
     query_template = "INSERT into need (Donationtypeid, userID, description, cashValue, quantityAmount, quantityremaining) VALUES (" \
             "{}, {}, '{}', {}, {}, {})"
     query = query_template.format(typeID, userID, description, cashValue, quantityAmount, quantityAmount)
@@ -71,6 +79,25 @@ def is_registered(id, firstname) -> bool:
         print("yes, %s is registered" % (firstname))
         return True
     return False
+
+def get_all_types_as_list():
+    query = "SELECT donationtypename FROM donationtype"
+    cr.execute(query)
+    donation_types = cr.fetchall()
+    donation_types_names = []
+    for d_type in donation_types:
+        donation_types_names.append([d_type[0]])
+    donation_types_names.append(['other'])
+    print("donation_types = " + donation_types)
+    return donation_types
+
+# A.Y: create new donation type:
+def create_new_donationtype(donation_type_name, estimated_value):
+    query = "INSERT INTO donationtype (donationtypename, value, isvalidated) VALUES (%s, %s)" \
+            % (donation_type_name, str(estimated_value), 0)
+    cr.execute(query)
+    mydb.commit()
+    print("new donation type inserted.")
 
 def get_user_by_id(id):
     query = "SELECT userid, firstname, chatId from user where userid <= " + str(id)
@@ -248,5 +275,10 @@ def get_victimid_from_need(needid):
     a = cr.fetchall()
     return a[0][0]
 
-#print(type(get_donorid_from_offer(1)))
-#print( get_phonenumber(1448273288))
+def check_if_type_exists(new_type_name):
+    query = "SELECT * FROM donationtype WHERE donationtypename=%s" % new_type_name
+    cr.execute(query)
+    type_exists =  cr.fetchall().__len__() > 0
+    print("Does this type exist? -> " + type_exists)
+    return type_exists
+

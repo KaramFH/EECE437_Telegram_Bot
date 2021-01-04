@@ -34,8 +34,9 @@ request = []
 CHOOSING, PHONE_NUMBER, PHONE_NUMBER_YN, BIRTHDATE, BIRTHDATE_YN, ADDRESS, ADDRESS_YN, LOCATION, CONCLUDE , MENU, WELCOME, ACTIONS, \
 OFFER_TYPE, OFFER_DESCRIPTION, OFFER_QUANTITY, OFFER_done, REQUEST_TYPE, REQUEST_DESCRIPTION, REQUEST_QUANTITY, REQCASH_ESTIMATE, \
 REQUEST_NOTED, NEW_VOLUNTEER, CHOOSE_VALUES_TO_UPDATE, U_ADDRESS, U_LOCATION, START_DELIVERY, DELIVERY_SUCCESS, DELIVERY_FAILURE, CHOOSE_DONATION, \
-CHOOSE_OFFER, SAVE_OFFER, ASK_OFFER_ID, DELIVER_NEEDS, UPDATE_NEED, ASK_NEED_ID = \
-    range(35)
+CHOOSE_OFFER, SAVE_OFFER, ASK_OFFER_ID, DELIVER_NEEDS, UPDATE_NEED, ASK_NEED_ID,NEW_DONATION_TYPE, ESTIMATING_NEW_DONATION_VALUE, NEW_REQUEST_TYPE, \
+ESTIMATING_NEW_NEED_VALUE = \
+    range(39)
 
 
 def actions(update: Update, context: CallbackContext) -> int:
@@ -262,7 +263,8 @@ def nothing_to_update(Update: Update, context: CallbackContext) -> int:
 ###########################################################################################################################################################
 
 def donation_type(update: Update, context: CallbackContext) -> int:
-    reply_keyboard = [['monetary'], ['medical'],['home essentials'],['clothes'],['academic essentials']]
+    # A.Y: 3-1-2020
+    reply_keyboard = Utils.get_all_types_as_list()
     update.message.reply_text(
         'God bless you, please choose what type of donation you are willing to offer',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
@@ -274,8 +276,52 @@ def donation_description(update: Update, context: CallbackContext)-> int:
     print(type1)
     offer.type = type1
     offer.userID = u1.UserID
+    # A.Y: 3-1-2020, Changed the logic
+    if offer.type == 'other':
+        update.message.reply_text(
+            'Please provide the name of the donation type',
+        )
+        return NEW_DONATION_TYPE
+    else:
+        update.message.reply_text(
+            'Great! please provide a description of your donation',
+        )
+    return OFFER_QUANTITY
+
+def new_donation_type(update: Update, context: CallbackContext)-> int:
+    new_donation_name = update.message.text
+    offer.type = new_donation_name
+    print("New offer type is: " + str(offer.type))
+    
+    # This case happens when the user chooses 'other' and then enter a type that already rxists.
+    # Example: medical. In this case, we should not create a new type in the database. 
+    if Utils.check_if_type_exists(offer.type):
+        update.message.reply_text(
+            'This donation type already exists. Please provide a description of your donation',
+        )
+        return OFFER_QUANTITY
+    else:
+        update.message.reply_text(
+            'Thanks for donating a new type! Can you first estimate the value of this donation?'
+        )
+        return ESTIMATING_NEW_DONATION_VALUE
+
+def estimating_new_donation_value(update: Update, context: CallbackContext)-> int:
+    cash_value = update.message.text
+    if isinstance(cash_value, int):
+        estimated_value = int(cash_value)
+    elif isinstance(cash_value, float):
+        estimated_value = float(cash_value)
+    else:
+        update.message.reply_text(
+            'This value is invalid. Please type a number.'
+        )
+        return ESTIMATING_NEW_DONATION_VALUE
+    
+    offer.cash_value = estimated_value
+    Utils.create_new_donationtype(offer.type, estimated_value)
     update.message.reply_text(
-        'Great! please provide a description of your donation',
+        'Thanks for choosing to donate a new item! Now provide a description for your donation.'
     )
     return OFFER_QUANTITY
 
@@ -321,6 +367,43 @@ def request_description( update: Update, context: CallbackContext)-> int:
         'please provide us with a description of your need...'
     )
     return REQUEST_DESCRIPTION
+
+def new_request_type(update: Update, context: CallbackContext)-> int:
+    new_donation_name = update.message.text
+    offer.type = new_donation_name
+    print("New request type is: " + str(offer.type))
+    
+    # This case happens when the user chooses 'other' and then enter a type that already rxists.
+    # Example: medical. In this case, we should not create a new type in the database. 
+    if Utils.check_if_type_exists(offer.type):
+        update.message.reply_text(
+            'This type already exists. Please provide a description of your need',
+        )
+        return REQUEST_QUANTITY
+    else:
+        update.message.reply_text(
+            'Your need has been noted. Can you please provide as estimate of the value of your need?'
+        )
+        return ESTIMATING_NEW_NEED_VALUE
+
+def estimating_new_need_value(update: Update, context: CallbackContext)-> int:
+    cash_value = update.message.text
+    if isinstance(cash_value, int):
+        estimated_value = int(cash_value)
+    elif isinstance(cash_value, float):
+        estimated_value = float(cash_value)
+    else:
+        update.message.reply_text(
+            'This value is invalid. Please type a number.'
+        )
+        return ESTIMATING_NEW_DONATION_VALUE
+    
+    offer.cash_value = estimated_value
+    Utils.create_new_donationtype(offer.type, estimated_value)
+    update.message.reply_text(
+        'We know now the value of your need. Now provide a description for your donation.'
+    )
+    return REQUEST_QUANTITY
 
 def request_quantity ( update: Update, context: CallbackContext)-> int:
     print(request)

@@ -134,6 +134,18 @@ def create_start_handler():
             ],
             ASK_NEED_ID: [
                 MessageHandler(Filters.text, update_need_pickedup)
+            ],
+            NEW_DONATION_TYPE: [
+                MessageHandler(Filters.text, new_donation_type)
+            ],
+            ESTIMATING_NEW_DONATION_VALUE: [
+                MessageHandler(Filters.text, estimating_new_donation_value)
+            ],
+            NEW_REQUEST_TYPE: [
+                MessageHandler(Filters.text, new_request_type)
+            ],
+            ESTIMATING_NEW_NEED_VALUE: [
+                MessageHandler(Filters.text, estimating_new_need_value)
             ]
         },
         fallbacks = [
