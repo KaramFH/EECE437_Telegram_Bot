@@ -288,6 +288,7 @@ def donation_description(update: Update, context: CallbackContext)-> int:
         )
     return OFFER_QUANTITY
 
+#ERROR HERE K.H on 1/5/2021
 def new_donation_type(update: Update, context: CallbackContext)-> int:
     new_donation_name = update.message.text
     offer.type = new_donation_name
@@ -337,8 +338,8 @@ def donation_quantity(update: Update, context: CallbackContext)-> int:
     return OFFER_done   
 
 
-#ERROR HERE
-def offer_registered( update: Update, context: CallbackContext)-> int: #Karam Hasan on 1/5/2021: There is an error when running this function please A.Y check it out    
+#ERROR HERE Karam Hasan on 1/5/2021: There is an error when running this function please A.Y check it out    
+def offer_registered( update: Update, context: CallbackContext)-> int: 
     qt = update.message.text
     offer.QuantityAmount = qt
     Utils.add_offer(offer.type, offer.userID, offer.description, offer.QuantityAmount)
