@@ -48,7 +48,7 @@ def main() -> None:
     dispatcher.add_handler(handlers_factory.create_delivery_handler())
     dispatcher.add_handler(handlers_factory.create_pickup_handler())
     dispatcher.add_handler(handlers_factory.create_update_pickup_handler())
-    dispatcher.add_handler(handlers_factory.create_cancel_handler())
+    #dispatcher.add_handler(handlers_factory.create_cancel_handler())
     dispatcher.add_handler(handlers_factory.create_need_handler())
     dispatcher.add_handler(handlers_factory.create_update_need_handler())
     # _thread.start_new_thread(manager.find_matched_items, ())

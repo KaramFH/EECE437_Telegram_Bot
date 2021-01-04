@@ -88,7 +88,7 @@ def get_all_types_as_list():
     for d_type in donation_types:
         donation_types_names.append([d_type[0]])
     donation_types_names.append(['other'])
-    print("donation_types = " + donation_types)
+    #print("donation_types = " + donation_types)
     return donation_types
 
 # A.Y: create new donation type:
