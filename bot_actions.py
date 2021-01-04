@@ -720,7 +720,7 @@ def ask_for_needid(update: Update, context: CallbackContext) -> int:
     a = utilities.show_assignedNeeds(user_id)
 
     update.message.reply_text(
-             "If you have picked up a need to deliver, please provide me with it\'s need ID"
+             "If you have delivered a need, please provide me with it\'s need ID"
          )
     update.message.reply_text(
             "These are your assigned needs to deliver: "
