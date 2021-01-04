@@ -454,12 +454,20 @@ def request_noted(update: Update, context: CallbackContext)-> int:
 ###########################################################################################################################################################
 
 def new_volunteer( update: Update, context: CallbackContext ) -> int  :
-    reply_keyboard = [['Yes', 'No']]
-    update.message.reply_text(
-        "Are you sure you want to be registered as a volunteer ?",
-        reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
-    )
-    return NEW_VOLUNTEER
+    user = update.message.from_user
+    user_id = user.id
+    if not Utils.user_is_volunteer(user_id):
+        update.message.reply_text(
+        "You are already a volunteer."
+        )
+        return ConversationHandler.END
+    else:
+        reply_keyboard = [['Yes', 'No']]
+        update.message.reply_text(
+            "Are you sure you want to be registered as a volunteer ?",
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+        )
+        return NEW_VOLUNTEER
 
 def added_volunteer(update: Update, context: CallbackContext) -> int :
     reply_keyboard = [['request task'], ['Adieus'],['done']]
