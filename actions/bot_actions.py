@@ -1,16 +1,15 @@
 from telegram.ext import ConversationHandler, MessageHandler, CommandHandler, Filters, CallbackContext, Updater
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
+from utilities import db_utilities, general_utilities
+from models import Offer, User
 from datetime import datetime
 from telegram import Location
-from user import User
+from utilities import bot_states
 from typing import Dict
-from Offer import Offer
-import Utils
 import telegram.ext
-import utilities
 import telegram
 import logging
-import matcher
+from modules import matcher
 
 #karam hasan was here
 
@@ -30,15 +29,6 @@ u1 = User()
 offer = Offer()
 request = []
 
-# These are the states  of the Start command
-CHOOSING, PHONE_NUMBER, PHONE_NUMBER_YN, BIRTHDATE, BIRTHDATE_YN, ADDRESS, ADDRESS_YN, LOCATION, CONCLUDE , MENU, WELCOME, ACTIONS, \
-OFFER_TYPE, OFFER_DESCRIPTION, OFFER_QUANTITY, OFFER_done, REQUEST_TYPE, REQUEST_DESCRIPTION, REQUEST_QUANTITY, REQCASH_ESTIMATE, \
-REQUEST_NOTED, NEW_VOLUNTEER, CHOOSE_VALUES_TO_UPDATE, U_ADDRESS, U_LOCATION, START_DELIVERY, DELIVERY_SUCCESS, DELIVERY_FAILURE, CHOOSE_DONATION, \
-CHOOSE_OFFER, SAVE_OFFER, ASK_OFFER_ID, DELIVER_NEEDS, UPDATE_NEED, ASK_NEED_ID,NEW_DONATION_TYPE, ESTIMATING_NEW_DONATION_VALUE, NEW_REQUEST_TYPE, \
-ESTIMATING_NEW_NEED_VALUE = \
-    range(39)
-
-
 def actions(update: Update, context: CallbackContext) -> int:
     reply_keyboard = [['Donate'],['Volunteer'],['Request'],
                       ['Nothing'],['Deliver'],['Show Offers'],['Update Pickup'],['Show Needs'],['Update on picked up needs']]
@@ -46,7 +36,7 @@ def actions(update: Update, context: CallbackContext) -> int:
         "Please choose what you want to do.",
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
-    return ACTIONS
+    return bot_states.ACTIONS
 
 def start(update: Update, context: CallbackContext) -> int:
 
@@ -59,7 +49,7 @@ def start(update: Update, context: CallbackContext) -> int:
     u1.CreationDate = datetime.now()
 
     # in case user is already registered , do not take him through the registration steps
-    if Utils.is_registered(user.id, user.first_name) :
+    if db_utilities.is_registered(user.id, user.first_name) :
         return Welcome_back(update, context)
 
     #usual registration process taken
@@ -73,14 +63,14 @@ def start(update: Update, context: CallbackContext) -> int:
             "If they are not true please press Cancel and change them in the settings of the telegram app",
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
-        return CHOOSING
+        return bot_states.CHOOSING
 
 # function that asks the user about his phone number
 def phone_number(update: Update, context: CallbackContext) -> int:
     update.message.reply_text(
         'All right, please send me your phone number'
     )
-    return PHONE_NUMBER
+    return bot_states.PHONE_NUMBER
 
 # function that stores the phone number of the user and sends a conformation message
 def phone_number_text(update: Update, context: CallbackContext) -> int:
@@ -90,14 +80,14 @@ def phone_number_text(update: Update, context: CallbackContext) -> int:
     update.message.reply_text(f'Your number is: {text.lower()}? Please make sure',
                               reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True), )
 
-    return PHONE_NUMBER_YN
+    return bot_states.PHONE_NUMBER_YN
 
 # function that asks the user about his birthdate
 def birthdate(update: Update, context: CallbackContext) -> int:
     update.message.reply_text(
         'Please give me your birthdate in DD/MM/YY format.'
     )
-    return BIRTHDATE
+    return bot_states.BIRTHDATE
 
 # function that stores the birthdate of the user and sends a conformation message
 def birthdate_text(update: Update, context: CallbackContext) -> int:
@@ -106,7 +96,7 @@ def birthdate_text(update: Update, context: CallbackContext) -> int:
     u1.Birthdate = text
     update.message.reply_text(f'Your birthdate is: {text.lower()}? Please make sure',
                               reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True), )
-    return BIRTHDATE_YN
+    return bot_states.BIRTHDATE_YN
 
 # function that asks the user about his address
 def address(update: Update, context: CallbackContext) -> int:
@@ -114,7 +104,7 @@ def address(update: Update, context: CallbackContext) -> int:
         'Alright, please send me your address'
     )
 
-    return ADDRESS
+    return bot_states.ADDRESS
 
 # function that stores the address of the user and sends a conformation message
 def address_text(update: Update, context: CallbackContext) -> int:
@@ -125,7 +115,7 @@ def address_text(update: Update, context: CallbackContext) -> int:
     update.message.reply_text(f'Your address is: {text.lower()}? Please make sure',
                               reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True), )
 
-    return ADDRESS_YN
+    return bot_states.ADDRESS_YN
 
 # function that asks the user about his location
 def ask_location(update: Update, context: CallbackContext) -> int:
@@ -133,7 +123,7 @@ def ask_location(update: Update, context: CallbackContext) -> int:
         'Now, send me your location please'
     )
     print("asked for location")
-    return LOCATION
+    return bot_states.LOCATION
 
 # function that stores the users location in the user class and sends him a thankyou message
 def location(update: Update, context: CallbackContext) -> int:
@@ -146,8 +136,8 @@ def location(update: Update, context: CallbackContext) -> int:
         'Thank you! your information will now be saved in the database to help with your needs. Press Cancel to delete everything',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
-    #Utils.create_new_user(u1.UserID, u1.FirstName, u1.LastName, u1.Birthdate, u1.PhoneNumber, u1.ChatID)
-    return CONCLUDE
+    #db_utilities.create_new_user(u1.UserID, u1.FirstName, u1.LastName, u1.Birthdate, u1.PhoneNumber, u1.ChatID)
+    return bot_states.CONCLUDE
 
 # Function that sends a reply to the user summarizing the information sent from the user
 def received_information(update: Update, context: CallbackContext) -> int:
@@ -169,8 +159,8 @@ def received_information(update: Update, context: CallbackContext) -> int:
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     )
     now = datetime.now()
-    Utils.create_new_user(u1.UserID, u1.FirstName, u1.LastName, u1.Birthdate, u1.PhoneNumber,u1.AddressLatitude,u1.AddressLongitude,u1.AddressDescription, u1.ChatID)
-    return MENU
+    db_utilities.create_new_user(u1.UserID, u1.FirstName, u1.LastName, u1.Birthdate, u1.PhoneNumber,u1.AddressLatitude,u1.AddressLongitude,u1.AddressDescription, u1.ChatID)
+    return bot_states.MENU
 
     # if the user is already in the Database, we will raise an error and inform the user about it
     # this will be implemented after we connect the bot to the database
@@ -181,7 +171,7 @@ def Welcome_back(update: Update, context: CallbackContext) -> int:
         'Nice to see you again, feel free to choose what do you want to do',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
-    return WELCOME
+    return bot_states.WELCOME
 
 # function cancel that cancels the process and deletes the information about the user
 def cancel(update: Update, context: CallbackContext) -> int:
@@ -206,7 +196,7 @@ def done(update: Update, context: CallbackContext) -> int:
 
 def update(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
-    if not Utils.is_registered(user.id, user.first_name) :
+    if not db_utilities.is_registered(user.id, user.first_name) :
         update.message.reply_text(
         "You are not registered. Please type '/start' to register yourself"
         )
@@ -217,28 +207,28 @@ def update(update: Update, context: CallbackContext) -> int:
             "What info would you like to update? Please choose one:",
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
-        return CHOOSE_VALUES_TO_UPDATE
+        return bot_states.CHOOSE_VALUES_TO_UPDATE
 
 def update_address_bot(update: Update, context: CallbackContext) -> int:
     update.message.reply_text(
         "Please write your new address."
     )
-    return U_ADDRESS
+    return bot_states.U_ADDRESS
 def update_address_bot_text(update: Update, context: CallbackContext) -> int:
     text = update.message.text
     user = update.message.from_user
     userid = user.id
-    Utils.update_address(userid, text)
+    db_utilities.update_address(userid, text)
     update.message.reply_text(
         "Thank you. Your address have been updated to: "f'{text}'
     )
-    return ConversationHandler.END
+    return bot_states.ConversationHandler.END
 
 def update_location_bot(update: Update, context: CallbackContext) -> int:
     update.message.reply_text(
         "Please send me your new location"
     )
-    return U_LOCATION
+    return bot_states.U_LOCATION
 
 def update_location_bot_text(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
@@ -246,7 +236,7 @@ def update_location_bot_text(update: Update, context: CallbackContext) -> int:
     user_location = update.message.location
     lon = str(user_location.longitude)
     lat = str(user_location.latitude)
-    Utils.update_location(userid , lon, lat)
+    db_utilities.update_location(userid , lon, lat)
     update.message.reply_text(
         "Thank you. Your location have been updated to: "f'{lat,lon}'
     )
@@ -264,12 +254,12 @@ def nothing_to_update(Update: Update, context: CallbackContext) -> int:
 
 def donation_type(update: Update, context: CallbackContext) -> int:
     # A.Y: 3-1-2020
-    reply_keyboard = Utils.get_all_types_as_list()
+    reply_keyboard = db_utilities.get_all_types_as_list()
     update.message.reply_text(
         'God bless you, please choose what type of donation you are willing to offer',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     )
-    return OFFER_DESCRIPTION
+    return bot_states.OFFER_DESCRIPTION
 
 def donation_description(update: Update, context: CallbackContext)-> int:
     type1 = update.message.text
@@ -281,12 +271,12 @@ def donation_description(update: Update, context: CallbackContext)-> int:
         update.message.reply_text(
             'Please provide the name of the donation type',
         )
-        return NEW_DONATION_TYPE
+        return bot_states.NEW_DONATION_TYPE
     else:
         update.message.reply_text(
             'Great! please provide a description of your donation',
         )
-    return OFFER_QUANTITY
+    return bot_states.OFFER_QUANTITY
 
 def new_donation_type(update: Update, context: CallbackContext)-> int:
     new_donation_name = update.message.text
@@ -295,16 +285,16 @@ def new_donation_type(update: Update, context: CallbackContext)-> int:
     
     # This case happens when the user chooses 'other' and then enter a type that already rxists.
     # Example: medical. In this case, we should not create a new type in the database. 
-    if Utils.check_if_type_exists(offer.type):
+    if db_utilities.check_if_type_exists(offer.type):
         update.message.reply_text(
             'This donation type already exists. Please provide a description of your donation',
         )
-        return OFFER_QUANTITY
+        return bot_states.OFFER_QUANTITY
     else:
         update.message.reply_text(
             'Thanks for donating a new type! Can you first estimate the value of this donation?'
         )
-        return ESTIMATING_NEW_DONATION_VALUE
+        return bot_states.ESTIMATING_NEW_DONATION_VALUE
 
 def estimating_new_donation_value(update: Update, context: CallbackContext)-> int:
     cash_value = update.message.text
@@ -316,14 +306,14 @@ def estimating_new_donation_value(update: Update, context: CallbackContext)-> in
         update.message.reply_text(
             'This value is invalid. Please type a number.'
         )
-        return ESTIMATING_NEW_DONATION_VALUE
+        return bot_states.ESTIMATING_NEW_DONATION_VALUE
     
     offer.cash_value = estimated_value
-    Utils.create_new_donationtype(offer.type, estimated_value)
+    db_utilities.create_new_donationtype(offer.type, estimated_value)
     update.message.reply_text(
         'Thanks for choosing to donate a new item! Now provide a description for your donation.'
     )
-    return OFFER_QUANTITY
+    return bot_states.OFFER_QUANTITY
 
 def donation_quantity(update: Update, context: CallbackContext)-> int:
     desc = update.message.text
@@ -334,12 +324,12 @@ def donation_quantity(update: Update, context: CallbackContext)-> int:
         'Thanks, can you specify the quantity/amount you will be providing in integers, ex: 5 (unit)',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     )
-    return OFFER_done
+    return bot_states.OFFER_done
 
 def offer_registered( update: Update, context: CallbackContext)-> int:
     qt = update.message.text
     offer.QuantityAmount = qt
-    Utils.add_offer(offer.type, offer.userID, offer.description, offer.QuantityAmount)
+    db_utilities.add_offer(offer.type, offer.userID, offer.description, offer.QuantityAmount)
     update.message.reply_text(
         'Hope is never lost with a community such as yours, can you deliver this donation yourself to the nearest '
         'center or do you need someone to pick it up when possible ',
@@ -358,7 +348,7 @@ def request_type ( update: Update, context: CallbackContext)-> int:
         'We will assist you if god wills, please choose what type of need you want to request...',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     )
-    return REQUEST_TYPE
+    return bot_states.REQUEST_TYPE
 
 def request_description( update: Update, context: CallbackContext)-> int:
     request_type = update.message.text
@@ -366,7 +356,7 @@ def request_description( update: Update, context: CallbackContext)-> int:
     update.message.reply_text(
         'please provide us with a description of your need...'
     )
-    return REQUEST_DESCRIPTION
+    return bot_states.REQUEST_DESCRIPTION
 
 def new_request_type(update: Update, context: CallbackContext)-> int:
     new_donation_name = update.message.text
@@ -375,16 +365,16 @@ def new_request_type(update: Update, context: CallbackContext)-> int:
     
     # This case happens when the user chooses 'other' and then enter a type that already rxists.
     # Example: medical. In this case, we should not create a new type in the database. 
-    if Utils.check_if_type_exists(offer.type):
+    if db_utilities.check_if_type_exists(offer.type):
         update.message.reply_text(
             'This type already exists. Please provide a description of your need',
         )
-        return REQUEST_QUANTITY
+        return bot_states.REQUEST_QUANTITY
     else:
         update.message.reply_text(
             'Your need has been noted. Can you please provide as estimate of the value of your need?'
         )
-        return ESTIMATING_NEW_NEED_VALUE
+        return bot_states.ESTIMATING_NEW_NEED_VALUE
 
 def estimating_new_need_value(update: Update, context: CallbackContext)-> int:
     cash_value = update.message.text
@@ -396,14 +386,14 @@ def estimating_new_need_value(update: Update, context: CallbackContext)-> int:
         update.message.reply_text(
             'This value is invalid. Please type a number.'
         )
-        return ESTIMATING_NEW_DONATION_VALUE
+        return bot_states.ESTIMATING_NEW_DONATION_VALUE
     
     offer.cash_value = estimated_value
-    Utils.create_new_donationtype(offer.type, estimated_value)
+    db_utilities.create_new_donationtype(offer.type, estimated_value)
     update.message.reply_text(
         'We know now the value of your need. Now provide a description for your donation.'
     )
-    return REQUEST_QUANTITY
+    return bot_states.REQUEST_QUANTITY
 
 def request_quantity ( update: Update, context: CallbackContext)-> int:
     print(request)
@@ -414,7 +404,7 @@ def request_quantity ( update: Update, context: CallbackContext)-> int:
         'Please provide the quantity or amount needed if your need is quantifiable...',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     )
-    return REQUEST_QUANTITY
+    return bot_states.REQUEST_QUANTITY
 
 # this stage will be used to estimate cash amount needed for non-monetary needs, exp: medicine,laptops,books...
 #for now we will skip this stage
@@ -426,7 +416,7 @@ def ReqCash_estimate(update: Update, context: CallbackContext) -> int:
         'can you estimate the amount of cash in thousands LBP necessary to fulfill your need...',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     )
-    return REQUEST_QUANTITY
+    return bot_states.REQUEST_QUANTITY
 ##################################~~~~~~~~~~~~~~~~~~~~~~~~~~#############################################################
 
 def request_noted(update: Update, context: CallbackContext)-> int:
@@ -443,8 +433,8 @@ def request_noted(update: Update, context: CallbackContext)-> int:
     request_description = request[3]
     cash_value = 0
     quantity = request[4]
-    Utils.add_need(user_id, donation_type_id, request_description, cash_value, quantity)
-    return ACTIONS
+    db_utilities.add_need(user_id, donation_type_id, request_description, cash_value, quantity)
+    return bot_states.ACTIONS
 
 ###########################################################################################################################################################
 # REGISTERING A VOLUNTEER
@@ -456,7 +446,7 @@ def new_volunteer( update: Update, context: CallbackContext ) -> int  :
         "Are you sure you want to be registered as a volunteer ?",
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     )
-    return NEW_VOLUNTEER
+    return bot_states.NEW_VOLUNTEER
 
 def added_volunteer(update: Update, context: CallbackContext) -> int :
     reply_keyboard = [['request task'], ['Adieus'],['done']]
@@ -465,8 +455,8 @@ def added_volunteer(update: Update, context: CallbackContext) -> int :
         "to people in need, run the /deliver command.",
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     )
-    Utils.add_volunteer(u1.UserID, u1.FirstName, u1.LastName, u1.ChatID)
-    return ACTIONS
+    db_utilities.add_volunteer(u1.UserID, u1.FirstName, u1.LastName, u1.ChatID)
+    return bot_states.ACTIONS
 
 ###########################################################################################################################################################
 # DELIVERING ITEMS A.Y
@@ -477,13 +467,13 @@ def deliver(update: Update, context: CallbackContext) -> int:
     reply_keyboard = [['I want to deliver items', 'Succeeded in delivering an item', 'Failed in delivering an item'],
                       ['Register as Volunteer']]
     user = update.message.from_user
-    if Utils.user_is_volunteer(user.id):
+    if db_utilities.user_is_volunteer(user.id):
         update.message.reply_text(
             "Welcome back, volunteer! What did you come here for?",
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
         )
 
-        return START_DELIVERY
+        return bot_states.START_DELIVERY
     else:
         reply_keyboard1= [['Register as Volunteer']]
         update.message.reply_text(
@@ -491,29 +481,29 @@ def deliver(update: Update, context: CallbackContext) -> int:
             "command and choose the 'Register as Volunteer' action in order for you to register.",
             reply_markup = ReplyKeyboardMarkup(reply_keyboard1, one_time_keyboard=True)
         )
-    return ACTIONS
+    return bot_states.ACTIONS
 
 def start_delivering(update: Update, context: CallbackContext) -> int:
-    undelivered_items = Utils.get_all_undelivered_items()
+    undelivered_items = db_utilities.get_all_undelivered_items()
     reply = "Below are all the matched items that you can deliver. Choose the Donation ID that mostly suits you:\n"
     for undelivered_item in undelivered_items:
-        reply = reply + utilities.create_text_for_donation(undelivered_item)
+        reply = reply + general_utilities.create_text_for_donation(undelivered_item)
     update.message.reply_text(reply)
-    return CHOOSE_DONATION
+    return bot_states.CHOOSE_DONATION
 
 def volunteer_chose_donation(update: Update, context: CallbackContext) -> int:
     donation_id = update.message.text
-    Utils.set_donation_as_being_delivered(donation_id)
+    db_utilities.set_donation_as_being_delivered(donation_id)
     update.message.reply_text(
         "Thanks for choosing the Donation " + donation_id + " to deliver. God bless you!" 
     )
-    return ACTIONS
+    return bot_states.ACTIONS
 
 def delivery_success_id(update: Update, context: CallbackContext) -> int:
     update.message.reply_text(
         "Please enter the delivery_id we provided you to mark it in our DB as successful"   
     )
-    return DELIVERY_SUCCESS
+    return bot_states.DELIVERY_SUCCESS
 
 
 def delivery_failure_id(update: Update, context: CallbackContext) -> int:
@@ -521,25 +511,25 @@ def delivery_failure_id(update: Update, context: CallbackContext) -> int:
         "Please enter the delivery_id we provided you to mark it in our DB as failure. But don't worry, there are "\
         "Many good people like you who are willing to help, and they will deliver the items!"   
     )
-    return DELIVERY_FAILURE
+    return bot_states.DELIVERY_FAILURE
 
 
 def mark_delivery_as_success(update: Update, context: CallbackContext) -> int:
     delivery_id = update.message.text
-    Utils.mark_delivery_as_success(int(delivery_id))
+    db_utilities.mark_delivery_as_success(int(delivery_id))
     update.message.reply_text(
         "Thanks for helping people.. God bless you!"   
     )
-    return START_DELIVERY
+    return bot_states.START_DELIVERY
 
 
 def mark_delivery_as_failure(update: Update, context: CallbackContext) -> int:
     delivery_id = update.message.text
-    Utils.mark_delivery_as_failure(int(delivery_id))
+    db_utilities.mark_delivery_as_failure(int(delivery_id))
     update.message.reply_text(
         "Thanks for trying. We will reset this delivery so that someone else may do it. Thanks for your time!"   
     )
-    return START_DELIVERY
+    return bot_states.START_DELIVERY
 
 ###########################################################################################################################################################
 # PICKUP
@@ -548,14 +538,14 @@ def mark_delivery_as_failure(update: Update, context: CallbackContext) -> int:
 def pickup_offers(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     user_id = user.id
-    if not Utils.user_is_volunteer(user_id):
+    if not db_utilities.user_is_volunteer(user_id):
         update.message.reply_text(
              "Your are not registerd as a volunteer. Please type '/start' to register as one."
          )
         return ConversationHandler.END
     else:
         reply_keyboard = [['Yes', 'Cancel']]
-        a = utilities.get_UnpickedUpOffers()
+        a = general_utilities.get_UnpickedUpOffers()
         update.message.reply_text(
             "These are the offers that are available for pickup:"
          )
@@ -566,13 +556,13 @@ def pickup_offers(update: Update, context: CallbackContext) -> int:
             "Do you want to pickup one of the offers?",
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
          )
-        return CHOOSE_OFFER
+        return bot_states.CHOOSE_OFFER
 
 def choose_offer(update: Update, context: CallbackContext) -> int:
     update.message.reply_text(
              "Please type the offer ID that you want to pickup."
          )
-    return SAVE_OFFER
+    return bot_states.SAVE_OFFER
 
 def save_offer(update: Update, context: CallbackContext) -> int:    
     user = update.message.from_user
@@ -580,8 +570,8 @@ def save_offer(update: Update, context: CallbackContext) -> int:
     text = update.message.text
 
     offerid = int(text)
-    chatid = Utils.get_donorid_from_offer(offerid)
-    pn = Utils.get_phonenumber(user_id)
+    chatid = db_utilities.get_donorid_from_offer(offerid)
+    pn = db_utilities.get_phonenumber(user_id)
 
     context.bot.send_message(chat_id= chatid,text = "A Volunteer will pickup your offer.")
     context.bot.send_message(chat_id= chatid,text = "The Volunteer's information are:")
@@ -592,9 +582,9 @@ def save_offer(update: Update, context: CallbackContext) -> int:
     msg3 = "Phone number: "+str(pn)
     context.bot.send_message(chat_id= chatid,text = msg3)
 
-    utilities.update_offer_assigned(offerid, user_id)
+    general_utilities.update_offer_assigned(offerid, user_id)
 
-    donor_details= utilities.details_of_user(chatid)
+    donor_details= general_utilities.details_of_user(chatid)
     update.message.reply_text(
              "Thankyou! The Donor of the offer have been informed. You should also contact the donor to take the offer from him."'\n'
              "These are the donor\'s details: "'\n'
@@ -612,7 +602,7 @@ def save_offer(update: Update, context: CallbackContext) -> int:
 def ask_for_offerid(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     user_id = user.id
-    a = utilities.show_assignedOffers( user_id)
+    a = general_utilities.show_assignedOffers( user_id)
 
     update.message.reply_text(
              "If you have picked up an offer, please provide me with it\'s offer ID"
@@ -623,7 +613,7 @@ def ask_for_offerid(update: Update, context: CallbackContext) -> int:
     update.message.reply_text(
             a
          )
-    return ASK_OFFER_ID
+    return bot_states.ASK_OFFER_ID
 
 def update_pickup(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
@@ -632,7 +622,7 @@ def update_pickup(update: Update, context: CallbackContext) -> int:
 
     offerid = int(text)
 
-    utilities.set_offer_pickedup(offerid, user_id)
+    general_utilities.set_offer_pickedup(offerid, user_id)
 
     update.message.reply_text(
              "Thank you! We are now up-to-date with you."
@@ -646,7 +636,7 @@ def update_pickup(update: Update, context: CallbackContext) -> int:
 def show_needs(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     user_id = user.id
-    if not Utils.user_is_volunteer(user_id):
+    if not db_utilities.user_is_volunteer(user_id):
         update.message.reply_text(
              "Your are not registerd as a volunteer. Please type '/start' to register as one."
          )
@@ -654,7 +644,7 @@ def show_needs(update: Update, context: CallbackContext) -> int:
 
     else:
         reply_keyboard = [['Yes', 'Cancel']]
-        a = utilities.get_UndeliveredNeeds()
+        a = general_utilities.get_UndeliveredNeeds()
         update.message.reply_text(
             "These are the undelivered needs that you can deliver:"
         )
@@ -666,14 +656,14 @@ def show_needs(update: Update, context: CallbackContext) -> int:
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
 
-        return DELIVER_NEEDS
+        return bot_states.DELIVER_NEEDS
 
 def choose_need(update: Update, context: CallbackContext) -> int:
     update.message.reply_text(
              "Please type the need ID that you want to deliver"
      )       
 
-    return UPDATE_NEED
+    return bot_states.UPDATE_NEED
 
 def update_need(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
@@ -681,8 +671,8 @@ def update_need(update: Update, context: CallbackContext) -> int:
     text = update.message.text
 
     needid = int(text)
-    chatid = Utils.get_victimid_from_need(needid)
-    pn = Utils.get_phonenumber(user_id)
+    chatid = db_utilities.get_victimid_from_need(needid)
+    pn = db_utilities.get_phonenumber(user_id)
 
     context.bot.send_message(chat_id= chatid,text = "A Volunteer will deliver to you your need.")
     context.bot.send_message(chat_id= chatid,text = "The Volunteer's information are:")
@@ -693,9 +683,9 @@ def update_need(update: Update, context: CallbackContext) -> int:
     msg3 = "Phone number: "+str(pn)
     context.bot.send_message(chat_id= chatid,text = msg3)
 
-    utilities.update_need_assigned(needid, user_id)
+    general_utilities.update_need_assigned(needid, user_id)
 
-    victim_details= utilities.details_of_user(chatid)
+    victim_details= general_utilities.details_of_user(chatid)
     update.message.reply_text(
              "Thankyou! The person in need have been informed. You should also contact this person to deliver his need to him."'\n'
              "These are the person\'s details: "'\n'
@@ -717,7 +707,7 @@ def ask_for_needid(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     user_id = user.id
 
-    a = utilities.show_assignedNeeds(user_id)
+    a = general_utilities.show_assignedNeeds(user_id)
 
     update.message.reply_text(
              "If you have delivered a need, please provide me with it\'s need ID"
@@ -728,7 +718,7 @@ def ask_for_needid(update: Update, context: CallbackContext) -> int:
     update.message.reply_text(
             a
          )
-    return ASK_NEED_ID
+    return bot_states.ASK_NEED_ID
 
 def update_need_pickedup(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
@@ -737,7 +727,7 @@ def update_need_pickedup(update: Update, context: CallbackContext) -> int:
 
     needid = int(text)
 
-    utilities.set_need_delivered(needid, user_id)
+    general_utilities.set_need_delivered(needid, user_id)
 
     update.message.reply_text(
             "Thank you! We are now up-to-date with you."

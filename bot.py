@@ -8,19 +8,9 @@ from telegram.ext import ConversationHandler, MessageHandler, CommandHandler, Fi
 from telegram import Location
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 import mysql.connector
-from Offer import Offer
 from datetime import datetime
-from user import User
-from typing import Dict
+from models import User, Offer
 import _thread
-
-mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="",
-    database="db437"
-)
-cr = mydb.cursor()
 
 # Enable logging
 logging.basicConfig(
@@ -51,6 +41,7 @@ def main() -> None:
     dispatcher.add_handler(handlers_factory.create_cancel_handler())
     dispatcher.add_handler(handlers_factory.create_need_handler())
     dispatcher.add_handler(handlers_factory.create_update_need_handler())
+    dispatcher.add_handler(handlers_factory.create_cancel_handler())
     # _thread.start_new_thread(manager.find_matched_items, ())
     # _thread.start_new_thread(matcher.run_matcher, ())
 

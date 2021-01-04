@@ -1,17 +1,13 @@
 from telegram.ext import ConversationHandler, MessageHandler, CommandHandler, Filters, CallbackContext, Updater
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
-from bot_actions import *
+from actions.cancel_actions import *
+from bot_states import *
+from actions.bot_actions import *
 from telegram import Location
 import telegram.ext
 import telegram
 
 def create_start_handler():
-
-    # Create the Updater and pass it your bot's token.
-    # Make sure to set use_context=True to use the new context based callbacks
-    # BOT TOKEN is a token unique for each bot. This Token cannot be shared because it will allow anyone to control the bot
-
-
 
     start_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start),
@@ -160,7 +156,6 @@ def create_start_handler():
 
     return start_handler
 
-
 def create_update_handler():
     update_handler = ConversationHandler(
         entry_points=[CommandHandler('update', update)],
@@ -273,14 +268,20 @@ def create_update_need_handler():
     )
     return update_need_handler
 
-#A.Y use this Handler
-
-# def create_cancel_handler():
-#     cancel_handler = ConversationHandler(
-#         entry_points=[CommandHandler('Cancel', )],
-#         states = {
-#         },
-#         fallbacks=[MessageHandler(Filters.regex('^Done$'), done)],
-#     )
-#     return cancel_handler
-
+def create_cancel_handler():
+    cancel_handler = ConversationHandler(
+        entry_points=[CommandHandler('Cancel', run_cancel_command)],
+        states = {
+            CANCEL_OPTION_CHOSEN: [
+                MessageHandler(Filters.regex('^Cancel Offer$'), cancel_offer_chosen),
+                MessageHandler(Filters.regex('^Cancel Need$'), cancel_need_chosen),
+                MessageHandler(Filters.regex('^Cancel Pickup$'), cancel_pickup_chosen),
+                MessageHandler(Filters.regex('^Cancel Delivery$'), cancel_delivery_chosen)
+            ],
+            CANCEL_OFFERING_ID_CHOSEN: [
+                MessageHandler(Filters.text, cancel_offering_by_id)
+            ],
+        },
+        fallbacks=[MessageHandler(Filters.regex('^Done$'), done)],
+    )
+    return cancel_handler

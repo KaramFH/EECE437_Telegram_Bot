@@ -1,8 +1,7 @@
 import utilities
-from volunteerstate import VolunteerState as states
-from donation_types import donation_types
+from models import VolunteerState as states
 from datetime import datetime
-from utilities import *
+from utilities import general_utilities
 import mysql.connector
 
 from geopy import distance #library that deals with coordinates and geographical distances
@@ -46,7 +45,7 @@ def get_type_id_from_type_name(typename):
     cr.execute(query)
     return cr.fetchall()[0]
 
-def add_offer(typename, userID, description ,QtAmount):
+def add_offer(typename, userID, description, QtAmount):
     # A.Y: I deleted the below line because we no longer need the donation_types
     # typeID  =  donation_types.get(typename)
     typeID = get_type_id_from_type_name(typename)
@@ -218,8 +217,8 @@ def get_all_undelivered_items():
     undelivered_items = cr.fetchall()
     undelivered_full_list = []
     for undelivered_offer in undelivered_items:
-        offer_full_list = get_offer_full_info(undelivered_offer[1]) # quantityamount, description, user_offering_lat, user_offering_long
-        need_full_list =  get_need_full_info(undelivered_offer[2]) # quantityamount, description, user_need_lat,
+        offer_full_list = general_utilities.get_offer_full_info(undelivered_offer[1]) # quantityamount, description, user_offering_lat, user_offering_long
+        need_full_list =  general_utilities.get_need_full_info(undelivered_offer[2]) # quantityamount, description, user_need_lat,
         # user_need_long
         donation_id = undelivered_offer[0]
         undelivered_full_list.append(donation_id)
@@ -282,3 +281,15 @@ def check_if_type_exists(new_type_name):
     print("Does this type exist? -> " + type_exists)
     return type_exists
 
+# NEW
+def get_all_offers_of_user(user_id):
+    query = "SELECT offeringid, description quantityamount, quantityremaining FROM offering " \
+            "WHERE isActive = 1, userid = " + str(user_id)
+    cr.execute(query)
+    return cr.fetchall()
+
+def delete_offering(offering_id):
+    query = "DELETE FROM offering WHERE offeringid = " + str(offering_id)
+    cr.execute
+    mydb.commit()
+    print("Done executing")

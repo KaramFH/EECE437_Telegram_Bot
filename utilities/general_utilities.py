@@ -295,8 +295,17 @@ def cancel_delivery_assigned(needID,userid) :
     query2 = "SELECT NeedTodeliver_id from volunteer WHERE userid =  " + str(userid)
     cr.execute(query2)
     offerIDs = cr.fetchall()[0][0]
-    updated = offerIDs.replace( str(needID) +",", "")
+    updated = offerIDs.replace(str(needID) + ",", "")
 
     query3 = "UPDATE volunteer SET NeedTodeliver_id = '{}' WHERE userID = " + str(userid)
     cr.execute(query3.format(updated))
     mydb.commit()
+
+def build_user_friendly_offers(user_offers):
+    display = ""
+    for offer in user_offers:
+        display = display + \
+            "Offering ID: " + offer[0] + "\n" + \
+            "    Description: " + offer[1] + "\n" + \
+            "    Quantity Amount: " + offer[2] + "\n"
+    return display
