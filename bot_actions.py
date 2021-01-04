@@ -334,9 +334,11 @@ def donation_quantity(update: Update, context: CallbackContext)-> int:
         'Thanks, can you specify the quantity/amount you will be providing in integers, ex: 5 (unit)',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     )
-    return OFFER_done
+    return OFFER_done   
 
-def offer_registered( update: Update, context: CallbackContext)-> int:
+
+#ERROR HERE
+def offer_registered( update: Update, context: CallbackContext)-> int: #Karam Hasan on 1/5/2021: There is an error when running this function please A.Y check it out    
     qt = update.message.text
     offer.QuantityAmount = qt
     Utils.add_offer(offer.type, offer.userID, offer.description, offer.QuantityAmount)
