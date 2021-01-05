@@ -288,3 +288,24 @@ def create_update_need_handler():
 #     )
 #     return cancel_handler
 
+def create_confirm_delivery_handler():
+    
+    confirm_delivery_handler = ConversationHandler(
+        entry_points=[CommandHandler('Confirm_Delivery',confirm_delivery )],
+        
+        states = {
+            CHOOSE_CONFIRM: [
+                MessageHandler(Filters.regex('^I received the delivery$'), delivery_received),
+                MessageHandler(Filters.regex('^I haven\'t received the deilvery$'),delivery_not_received)
+            ],
+            RECEIVED_NEED: [
+                MessageHandler(Filters.text, delivery_received_DB)
+            ],
+            NOT_RECEIVED_NEED: [
+                MessageHandler(Filters.text, delivery_not_received_DB)
+            ]
+        
+        },
+        fallbacks=[MessageHandler(Filters.regex('^Done$'), done)],
+    )
+    return confirm_delivery_handler

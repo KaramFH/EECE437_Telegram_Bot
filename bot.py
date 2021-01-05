@@ -51,6 +51,7 @@ def main() -> None:
     #dispatcher.add_handler(handlers_factory.create_cancel_handler())
     dispatcher.add_handler(handlers_factory.create_need_handler())
     dispatcher.add_handler(handlers_factory.create_update_need_handler())
+    dispatcher.add_handler(handlers_factory.create_confirm_delivery_handler())
     # _thread.start_new_thread(manager.find_matched_items, ())
     # _thread.start_new_thread(matcher.run_matcher, ())
 

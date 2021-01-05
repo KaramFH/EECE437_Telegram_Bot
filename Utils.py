@@ -292,3 +292,9 @@ def get_chatID(userid):    # put in Utils file ( a7san)
     chatIDs = cr.fetchall()
     print(chatIDs)
     return (chatIDs)
+
+def user_is_victim(user_id):
+
+    query = "SELECT needid from need where userid = " + str(user_id)
+    cr.execute(query)
+    return cr.fetchall().__len__() >= 1

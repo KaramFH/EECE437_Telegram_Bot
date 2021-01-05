@@ -35,8 +35,8 @@ CHOOSING, PHONE_NUMBER, PHONE_NUMBER_YN, BIRTHDATE, BIRTHDATE_YN, ADDRESS, ADDRE
 OFFER_TYPE, OFFER_DESCRIPTION, OFFER_QUANTITY, OFFER_done, REQUEST_TYPE, REQUEST_DESCRIPTION, REQUEST_QUANTITY, REQCASH_ESTIMATE, \
 REQUEST_NOTED, NEW_VOLUNTEER, CHOOSE_VALUES_TO_UPDATE, U_ADDRESS, U_LOCATION, START_DELIVERY, DELIVERY_SUCCESS, DELIVERY_FAILURE, CHOOSE_DONATION, \
 CHOOSE_OFFER, SAVE_OFFER, ASK_OFFER_ID, DELIVER_NEEDS, UPDATE_NEED, ASK_NEED_ID,NEW_DONATION_TYPE, ESTIMATING_NEW_DONATION_VALUE, NEW_REQUEST_TYPE, \
-ESTIMATING_NEW_NEED_VALUE, GO_MENU = \
-    range(40)
+ESTIMATING_NEW_NEED_VALUE, GO_MENU, CHOOSE_CONFIRM, RECEIVED_NEED, NOT_RECEIVED_NEED = \
+    range(43)
 
 
 def actions(update: Update, context: CallbackContext) -> int:
@@ -750,11 +750,118 @@ def update_need_pickedup(update: Update, context: CallbackContext) -> int:
 
     utilities.set_need_delivered(needid, user_id)
 
+    pn = Utils.get_phonenumber(user_id)
+
+    chatid = Utils.get_victimid_from_need(needid)
+    context.bot.send_message(chat_id= chatid,text = "Can you please confirm that your need have been delivered.")
+    msg = "Need ID: " + str(text)
+    context.bot.send_message(chat_id= chatid,text = msg)
+    context.bot.send_message(chat_id= chatid,text = "The Volunteer's information are:")
+    msg1 = "First name: "+str(user.first_name)
+    context.bot.send_message(chat_id= chatid,text = msg1)
+    msg2 = "Last name: "+str(user.last_name)
+    context.bot.send_message(chat_id= chatid,text = msg2)
+    msg3 = "Phone number: "+str(pn)
+    context.bot.send_message(chat_id= chatid,text = msg3)
+    context.bot.send_message(chat_id= chatid,text = "Run the /Confirm_Delivery command to confirm if you have received your need or not.")
+
     update.message.reply_text(
             "Thank you! We are now up-to-date with you."
         )
 
     return ConversationHandler.END
 
+###########################################################################################################################################################
+# Confirm_Delivery
+###########################################################################################################################################################
 
+def confirm_delivery(update: Update, context: CallbackContext) -> int:
+    user = update.message.from_user
+    user_id = user.id
 
+    if not Utils.user_is_victim(user_id):
+        update.message.reply_text(
+            "You did not request any need."
+        )
+        return ConversationHandler.END
+    else:
+        reply_keyboard = [['I received the delivery'],
+                      ['I haven\'t received the deilvery']]
+
+        update.message.reply_text(
+            "Please choose wether you received your need or not.",
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+        )
+        return CHOOSE_CONFIRM
+
+def delivery_received(update: Update, context: CallbackContext) -> int:
+    user = update.message.from_user
+    user_id = user.id
+
+    a = utilities.requested_needs(user_id)
+
+    update.message.reply_text(
+            "Here are the needs you have requested"
+        )
+
+    for x in a:
+        update.message.reply_text(
+            "Need ID: " f'{x[0]}''\n'
+            "Description: " f'{x[1]}'
+        )
+
+    update.message.reply_text(
+            "Please provide me with the need ID you have received"
+        )
+
+    return RECEIVED_NEED
+
+def  delivery_received_DB(update: Update, context: CallbackContext) -> int:
+    user = update.message.from_user
+    user_id = user.id
+    text = update.message.text
+
+    needid = int(text)
+
+    utilities.update_confirmation(user_id,needid , 1)
+
+    update.message.reply_text(
+            "Thank you."
+        )
+    return ConversationHandler.END
+
+def delivery_not_received(update: Update, context: CallbackContext) -> int:
+    user = update.message.from_user
+    user_id = user.id
+
+    a = utilities.requested_needs(user_id)
+
+    update.message.reply_text(
+            "Here are the needs you have requested"
+        )
+
+    for x in a:
+        update.message.reply_text(
+            "Need ID: " f'{x[0]}''\n'
+            "Description: " f'{x[1]}'
+        )
+
+    update.message.reply_text(
+            "Please provide me with the need ID of the need you have not received."
+        )
+
+    return NOT_RECEIVED_NEED
+
+def  delivery_not_received_DB(update: Update, context: CallbackContext) -> int:
+    user = update.message.from_user
+    user_id = user.id
+    text = update.message.text
+
+    needid = int(text)
+
+    utilities.update_confirmation(user_id,needid , 2)
+
+    update.message.reply_text(
+            "We will contact the volunteer to see what is the problem."
+        )
+    return ConversationHandler.END
