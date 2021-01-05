@@ -92,15 +92,17 @@ def get_all_types_as_list():
     return donation_types_names
 
 # A.Y: create new donation type:
+
 def create_new_donationtype(donation_type_name, estimated_value):
-    query = "INSERT INTO donationtype (donationtypename, value, isvalidated) VALUES (%s, %s)" \
-            % (donation_type_name, str(estimated_value), 0)
+    
+    query = "INSERT INTO donationtype (donationtypename, value, isvalidated) VALUES ('%s', '%s', 0)" \
+            % ( donation_type_name, str(estimated_value))
     cr.execute(query)
     mydb.commit()
     print("new donation type inserted.")
 
 def get_user_by_id(id):
-    query = "SELECT userid, firstname, chatId from user where userid <= " + str(id)
+    query = "SELECT userid, firstname, chatId from user where userid = " + str(id)
     cr.execute(query)
     users = cr.fetchall()
     print(users[1][0])
