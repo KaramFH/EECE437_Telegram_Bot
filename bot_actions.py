@@ -557,16 +557,19 @@ def mark_delivery_as_failure(update: Update, context: CallbackContext) -> int:
 ###########################################################################################################################################################
 
 def pickup_offers(update: Update, context: CallbackContext) -> int:
+    a = utilities.get_UnpickedUpOffers()
     user = update.message.from_user
     user_id = user.id
     if not Utils.user_is_volunteer(user_id):
         update.message.reply_text(
-             "Your are not registerd as a volunteer. Please type '/start' to register as one."
+            "These are the offers that are available:"
+         )
+        update.message.reply_text(
+            a
          )
         return ConversationHandler.END
     else:
         reply_keyboard = [['Yes', 'Cancel']]
-        a = utilities.get_UnpickedUpOffers()
         update.message.reply_text(
             "These are the offers that are available for pickup:"
          )
@@ -655,17 +658,20 @@ def update_pickup(update: Update, context: CallbackContext) -> int:
 ###########################################################################################################################################################
 
 def show_needs(update: Update, context: CallbackContext) -> int:
+    a = utilities.get_UndeliveredNeeds()
     user = update.message.from_user
     user_id = user.id
     if not Utils.user_is_volunteer(user_id):
         update.message.reply_text(
-             "Your are not registerd as a volunteer. Please type '/start' to register as one."
-         )
+            "These are the needs posted:"
+        )
+        update.message.reply_text(
+            a
+        )
         return ConversationHandler.END
 
     else:
         reply_keyboard = [['Yes', 'Cancel']]
-        a = utilities.get_UndeliveredNeeds()
         update.message.reply_text(
             "These are the undelivered needs that you can deliver:"
         )
