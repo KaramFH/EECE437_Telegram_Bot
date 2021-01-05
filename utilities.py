@@ -48,7 +48,7 @@ def get_need_full_info(need_id):
     need_full_info = [quantityamount, description, user_need_lati, user_need_long]
     return need_full_info
 
-def Offer_isMatched( offerid ):
+def Offer_isMatched( offerid ) -> bool:                 # check if there are any needs matched with this offer
 
     offering_query = "SELECT needID FROM donationlog WHERE offeringID = " + str(offerid)
     cr.execute(offering_query)
@@ -58,7 +58,7 @@ def Offer_isMatched( offerid ):
     return True
 
 
-def get_MatchedNeeeds( offerid):
+def get_MatchedNeeeds( offerid) :                  # get needs matched with this offer
 
     offering_query = "SELECT needID FROM donationlog WHERE offeringID = " + str(offerid)
     cr.execute(offering_query)
@@ -100,7 +100,27 @@ def text_for_Offer( offerID):        # gets offers UNpickied up with matched nee
     return Offer_as_text
 
 
-def get_UnpickedUpOffers() :
+def text_for_need(needID):        
+
+    offer_info = get_offer_full_info(needID)
+    Need_as_text = "" \
+        "  ***  NEED : " + "\n" \
+        "        Need ID =  " + str(needID) + "\n" \
+        "        Quantity Amount: " + str(offer_info[0]) + "\n" \
+        "        Description: " + str(offer_info[1]) + "\n" \
+        "        Latitude: " + str(offer_info[2]) + "\n" \
+        "        Longitude: " + str(offer_info[3] ) + "\n" \
+        "---------------------------------------------------------------"
+    
+    # if Offer_isMatched(needID):
+    #     matchedNeeds = get_MatchedNeeeds(needID)
+    #     Need_as_text +=  matchedNeeds
+
+
+    return Need_as_text
+
+
+def get_UnpickedUpOffers() :                      # Get offers unpicked up  and unassigned for vilunteers to see
 
     query = " SELECT offeringID from offering WHERE isPickedUp = 0 and Assigned = 0"
     cr.execute(query)
@@ -172,6 +192,22 @@ def show_assignedOffers( userid):
             fulltext += text_for_Offer(ID)
 
     return fulltext
+    
+
+def show_assignedNeeds( userid):
+
+    query = "SELECT NeedTodeliver_id from volunteer WHERE userid =  " + str(userid)
+    cr.execute(query)
+    IDs = cr.fetchall()
+    print(IDs)
+    ids = IDs[0][0].split(",")
+    print(ids)
+    fulltext = ""
+    for ID in ids :
+        if( ID != 'None'):
+            fulltext += text_for_need(ID)
+
+    return fulltext
 
 
 
@@ -233,41 +269,6 @@ def update_need_assigned(needID, userID):
 
 
 
-def text_for_need(needID):        # gets offers UNpickied up with matched needs
-
-    offer_info = get_offer_full_info(needID)
-    Need_as_text = "" \
-        "  ***  NEED : " + "\n" \
-        "        Need ID =  " + str(needID) + "\n" \
-        "        Quantity Amount: " + str(offer_info[0]) + "\n" \
-        "        Description: " + str(offer_info[1]) + "\n" \
-        "        Latitude: " + str(offer_info[2]) + "\n" \
-        "        Longitude: " + str(offer_info[3] ) + "\n" \
-        "---------------------------------------------------------------"
-    
-    # if Offer_isMatched(needID):
-    #     matchedNeeds = get_MatchedNeeeds(needID)
-    #     Need_as_text +=  matchedNeeds
-
-
-    return Need_as_text
-
-
-def show_assignedNeeds( userid):
-
-    query = "SELECT NeedTodeliver_id from volunteer WHERE userid =  " + str(userid)
-    cr.execute(query)
-    IDs = cr.fetchall()
-    print(IDs)
-    ids = IDs[0][0].split(",")
-    print(ids)
-    fulltext = ""
-    for ID in ids :
-        if( ID != 'None'):
-            fulltext += text_for_need(ID)
-
-    return fulltext
-
 
 def set_need_delivered(needid, volunteerID):
 
@@ -300,3 +301,34 @@ def cancel_delivery_assigned(needID,userid) :
     query3 = "UPDATE volunteer SET NeedTodeliver_id = '{}' WHERE userID = " + str(userid)
     cr.execute(query3.format(updated))
     mydb.commit()
+
+
+
+
+def get_chatID(userid):    # put in Utils file ( a7san)
+
+    query = "SELECT chatId from user where userid = " + str(userid)
+    cr.execute(query)
+    chatIDs = cr.fetchall()
+    print(chatIDs)
+    return (chatIDs)
+
+
+def DeliveredNeeds_receivers() :        # return list of tuples = [ (chatID , 'Need description), (ChatID , 'Need description')]
+
+    dict = []
+    query = "SELECT userID, description from need WHERE IsActive = 1 and confirmed =0  "         # get needs set as delivered, and get userIDs to confirm that they received
+    cr.execute(query)
+    ids_description = cr.fetchall()
+    for info in ids_description :
+        chatid = get_chatID(info[0])[0][0]
+        dict.append( (int(chatid), info[1]) )
+    return dict
+
+
+def update_confirmation(userID , value) :      # if needy person confirmed receival : set value = 1 , if No set = 2
+
+    query = " UPDATE need SET confirmed = {} where userid = "+ str(userID)
+    cr.execute(query.format(int(value)))
+    mydb.commit()
+

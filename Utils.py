@@ -282,3 +282,11 @@ def check_if_type_exists(new_type_name):
     print("Does this type exist? -> " + type_exists)
     return type_exists
 
+
+def get_chatID(userid):    # put in Utils file ( a7san)
+
+    query = "SELECT chatId from user where userid = " + str(userid)
+    cr.execute(query)
+    chatIDs = cr.fetchall()
+    print(chatIDs)
+    return (chatIDs)
