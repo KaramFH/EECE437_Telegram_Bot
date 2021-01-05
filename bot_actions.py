@@ -626,18 +626,25 @@ def save_offer(update: Update, context: CallbackContext) -> int:
 def ask_for_offerid(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     user_id = user.id
-    a = utilities.show_assignedOffers( user_id)
 
-    update.message.reply_text(
-             "If you have picked up an offer, please provide me with it\'s offer ID"
+    if not Utils.user_is_volunteer(user_id):
+        update.message.reply_text(
+             "You are not registered as a volunteer."
          )
-    update.message.reply_text(
-            "These are your assigned offers: "
-         )
-    update.message.reply_text(
-            a
-         )
-    return ASK_OFFER_ID
+        return GO_MENU
+    else:
+        a = utilities.show_assignedOffers( user_id)
+
+        update.message.reply_text(
+                "If you have picked up an offer, please provide me with it\'s offer ID"
+            )
+        update.message.reply_text(
+                "These are your assigned offers: "
+            )
+        update.message.reply_text(
+                a
+            )
+        return ASK_OFFER_ID
 
 def update_pickup(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
@@ -734,18 +741,25 @@ def ask_for_needid(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     user_id = user.id
 
-    a = utilities.show_assignedNeeds(user_id)
+    if not Utils.user_is_volunteer(user_id):
+        update.message.reply_text(
+             "You are not registered as a volunteer."
+         )
+        return GO_MENU
 
-    update.message.reply_text(
-             "If you have delivered a need, please provide me with it\'s need ID"
-         )
-    update.message.reply_text(
-            "These are your assigned needs to deliver: "
-         )
-    update.message.reply_text(
-            a
-         )
-    return ASK_NEED_ID
+    else:
+        a = utilities.show_assignedNeeds(user_id)
+
+        update.message.reply_text(
+                "If you have delivered a need, please provide me with it\'s need ID"
+            )
+        update.message.reply_text(
+                "These are your assigned needs to deliver: "
+            )
+        update.message.reply_text(
+                a
+            )
+        return ASK_NEED_ID
 
 def update_need_pickedup(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
