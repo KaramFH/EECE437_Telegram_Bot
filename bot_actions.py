@@ -77,14 +77,16 @@ def start(update: Update, context: CallbackContext) -> int:
 
 # function that asks the user about his phone number
 def phone_number(update: Update, context: CallbackContext) -> int:
+    reply_keyboard = [['Cancel']]
     update.message.reply_text(
-        'All right, please send me your phone number'
+        'All right, please send me your phone number',
+        reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
     return PHONE_NUMBER
 
 # function that stores the phone number of the user and sends a conformation message
 def phone_number_text(update: Update, context: CallbackContext) -> int:
-    reply_keyboard = [['Yes', 'No']]
+    reply_keyboard = [['Yes', 'No'],['Cancel']]
     text = update.message.text
     u1.PhoneNumber = text
     update.message.reply_text(f'Your number is: {text.lower()}? Please make sure',
@@ -94,14 +96,16 @@ def phone_number_text(update: Update, context: CallbackContext) -> int:
 
 # function that asks the user about his birthdate
 def birthdate(update: Update, context: CallbackContext) -> int:
+    reply_keyboard = [['Cancel']]
     update.message.reply_text(
-        'Please give me your birthdate in DD/MM/YY format.'
+        'Please give me your birthdate in DD/MM/YY format.',
+        reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
     return BIRTHDATE
 
 # function that stores the birthdate of the user and sends a conformation message
 def birthdate_text(update: Update, context: CallbackContext) -> int:
-    reply_keyboard = [['Yes', 'No']]
+    reply_keyboard = [['Yes', 'No'],['Cancel']]
     text = update.message.text
     u1.Birthdate = text
     update.message.reply_text(f'Your birthdate is: {text.lower()}? Please make sure',
@@ -110,8 +114,10 @@ def birthdate_text(update: Update, context: CallbackContext) -> int:
 
 # function that asks the user about his address
 def address(update: Update, context: CallbackContext) -> int:
+    reply_keyboard = [['Cancel']]
     update.message.reply_text(
-        'Alright, please send me your address'
+        'Alright, please send me your address',
+        reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
 
     return ADDRESS
