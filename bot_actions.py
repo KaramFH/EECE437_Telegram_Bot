@@ -43,7 +43,7 @@ ESTIMATING_NEW_NEED_VALUE, GO_MENU, CHOOSE_CONFIRM, RECEIVED_NEED, NOT_RECEIVED_
 
 def actions(update: Update, context: CallbackContext) -> int:
     reply_keyboard = [['Donate'],['Volunteer'],['Request'],
-                      ['Nothing'],['Deliver'],['Show Offers'],['Update Pickup'],['Show Needs'],['Update on picked up needs'],['Create Campaign']]
+                      ['Nothing'],['Show Offers'],['Update Pickup'],['Show Needs'],['Update on picked up needs'],['Create Campaign']]
     update.message.reply_text(
         "Please choose what you want to do.",
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
@@ -499,7 +499,7 @@ def added_volunteer(update: Update, context: CallbackContext) -> int :
     reply_keyboard = [['Menu'],['Exit']]
     update.message.reply_text(
         "God bless you, you have been added to the list of volunteers. If you want to start delivering items" \
-        "to people in need, run the /deliver command.",
+        "to people in need, you can press 'Show Offers' in menu to see the offers available for pickup, or press 'Show Needs' in menu to see the needs that should be delivered.",
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     )
     Utils.add_volunteer(u1.UserID, u1.FirstName, u1.LastName, u1.ChatID)
