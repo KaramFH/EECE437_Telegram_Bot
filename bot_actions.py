@@ -364,8 +364,7 @@ def offer_registered( update: Update, context: CallbackContext)-> int:
     offer.QuantityAmount = qt
     Utils.add_offer(offer.type, offer.userID, offer.description, offer.QuantityAmount)
     update.message.reply_text(
-        'Hope is never lost with a community such as yours, can you deliver this donation yourself to the nearest '
-        'center or do you need someone to pick it up when possible ',
+        'Hope is never lost with a community such as yours. Thank you for your offer.',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
     return ConversationHandler.END
@@ -465,7 +464,7 @@ def request_noted(update: Update, context: CallbackContext)-> int:
     print(request)
     reply_keyboard = [['Menu'], ['Exit']]
     update.message.reply_text(
-        'Your request has been well received. We are checking if there\'s someone who already donated the item you requested.',
+        'Your request has been well received. Thank You.',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     )
     user_id = request[0] 

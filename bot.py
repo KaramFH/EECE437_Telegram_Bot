@@ -38,7 +38,7 @@ def main() -> None:
     # the bot token is unique for every bot
 
     # This Token cannot be shared because it will allow anyone to control the bot
-    BOT_TOKEN = '1474571841:AAFGiL12zLiMtt_P0e89YPIkm8HmXTLKuNs'
+    BOT_TOKEN = '1481007102:AAHlLo8o1iGO7YFmwXsDUIumJetWdH3tcNY'
     updater = Updater(BOT_TOKEN, use_context=True)
 
     # Get the dispatcher to register handlers
