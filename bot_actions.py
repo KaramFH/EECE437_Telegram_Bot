@@ -329,8 +329,7 @@ def new_donation_type(update: Update, context: CallbackContext)-> int:
         update.message.reply_text(
 <<<<<<< HEAD
             'Thanks for donating a new type! Can you first estimate the value of this object in thousnds LBP ?',
-=======
-            'Thanks for donating a new type! Can you first estimate the value of this donation?',
+ 
 >>>>>>> 575f9221d9f83957cdb0413090e879cdd8983401
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
@@ -338,9 +337,6 @@ def new_donation_type(update: Update, context: CallbackContext)-> int:
 
 def estimating_new_donation_value(update: Update, context: CallbackContext)-> int:
 <<<<<<< HEAD
-
-    reply_keyboard=[['Cancel']]
-=======
     reply_keyboard=[['Cancel'],['50000'],['100000']]
 >>>>>>> 575f9221d9f83957cdb0413090e879cdd8983401
     cash_value = update.message.text
@@ -430,8 +426,6 @@ def new_request_type(update: Update, context: CallbackContext)-> int:
         update.message.reply_text(
 <<<<<<< HEAD
             'Your need has been noted. Can you please provide as estimate of the value of your need in thousands LBP?',
-=======
-            'Your need has been noted. Can you please provide as estimate of the value of your need?',
 >>>>>>> 575f9221d9f83957cdb0413090e879cdd8983401
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
