@@ -32,7 +32,7 @@ def get_phonenumber(userid):
 
 
 def add_volunteer(userID, firstname, lastname, chatid):
-    state = states.FREE.value			# use enum for volunteer state
+    state = VolunteerState.FREE.value           # use enum for volunteer state
     query_template = "INSERT into volunteer (userID, chatid, firstname, Lastname, state) VALUES (%d, %d, '%s', '%s', %d )"
     query = query_template % (int(userID), int(chatid), firstname, lastname, state)
     print(query)
@@ -42,9 +42,9 @@ def add_volunteer(userID, firstname, lastname, chatid):
 
 
 def get_type_id_from_type_name(typename):
-    query = "SELECT donationtypeid FROM donationtype WHERE donationtypename =" + str(typename)
-    cr.execute(query)
-    return cr.fetchall()[0]
+    query = "SELECT donationtypeid FROM donationtype WHERE donationtypename = '{}' "
+    cr.execute(query.format(typename))
+    return cr.fetchall()[0][0]
 
 def add_offer(typename, userID, description ,QtAmount):
     # A.Y: I deleted the below line because we no longer need the donation_types
@@ -281,7 +281,7 @@ def check_if_type_exists(new_type_name):
     query = "SELECT * FROM donationtype WHERE donationtypename='%s'" % new_type_name
     cr.execute(query)
     type_exists =  cr.fetchall().__len__() > 0
-    print("Does this type exist? -> " + type_exists)
+    print("Does this type exist? -> " + str(type_exists) )
     return type_exists
 
 

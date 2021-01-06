@@ -281,13 +281,17 @@ def donation_type(update: Update, context: CallbackContext) -> int:
     # A.Y: 3-1-2020
     reply_keyboard = [Utils.get_all_types_as_list()]
     update.message.reply_text(
-        'God bless you, please choose what type of donation you are willing to offer',
-        reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+        "God bless you, please choose what type of donation you are willing to offer",
+        reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
     return OFFER_DESCRIPTION
 
 def donation_description(update: Update, context: CallbackContext)-> int:
-    reply_keyboard=[['Cancel']]
+<<<<<<< HEAD
+
+    reply_keyboard= [['Cancel']]
+=======
+>>>>>>> 575f9221d9f83957cdb0413090e879cdd8983401
     type1 = update.message.text
     print(type1)
     offer.type = type1
@@ -323,13 +327,22 @@ def new_donation_type(update: Update, context: CallbackContext)-> int:
         return OFFER_QUANTITY
     else:
         update.message.reply_text(
+<<<<<<< HEAD
+            'Thanks for donating a new type! Can you first estimate the value of this object in thousnds LBP ?',
+=======
             'Thanks for donating a new type! Can you first estimate the value of this donation?',
+>>>>>>> 575f9221d9f83957cdb0413090e879cdd8983401
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
         return ESTIMATING_NEW_DONATION_VALUE
 
 def estimating_new_donation_value(update: Update, context: CallbackContext)-> int:
+<<<<<<< HEAD
+
+    reply_keyboard=[['Cancel']]
+=======
     reply_keyboard=[['Cancel'],['50000'],['100000']]
+>>>>>>> 575f9221d9f83957cdb0413090e879cdd8983401
     cash_value = update.message.text
     if isinstance(cash_value, int):
         estimated_value = int(cash_value)
@@ -415,7 +428,11 @@ def new_request_type(update: Update, context: CallbackContext)-> int:
         return REQUEST_QUANTITY
     else:
         update.message.reply_text(
+<<<<<<< HEAD
+            'Your need has been noted. Can you please provide as estimate of the value of your need in thousands LBP?',
+=======
             'Your need has been noted. Can you please provide as estimate of the value of your need?',
+>>>>>>> 575f9221d9f83957cdb0413090e879cdd8983401
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
         return ESTIMATING_NEW_NEED_VALUE
@@ -453,6 +470,8 @@ def request_quantity ( update: Update, context: CallbackContext)-> int:
     )
     return REQUEST_QUANTITY
 
+<<<<<<< HEAD
+=======
 # this stage will be used to estimate cash amount needed for non-monetary needs, exp: medicine,laptops,books...
 #for now we will skip this stage
 
@@ -465,6 +484,7 @@ def ReqCash_estimate(update: Update, context: CallbackContext) -> int:
     )
     return REQUEST_QUANTITY
 ##################################~~~~~~~~~~~~~~~~~~~~~~~~~~#############################################################
+>>>>>>> 575f9221d9f83957cdb0413090e879cdd8983401
 
 def request_noted(update: Update, context: CallbackContext)-> int:
     quantity = update.message.text
@@ -539,7 +559,11 @@ def deliver(update: Update, context: CallbackContext) -> int:
     return ACTIONS
 
 def start_delivering(update: Update, context: CallbackContext) -> int:
+<<<<<<< HEAD
+    reply_keyboard=[['Cancel']]
+=======
     reply_keyboard=['Cancel']
+>>>>>>> 575f9221d9f83957cdb0413090e879cdd8983401
     undelivered_items = Utils.get_all_undelivered_items()
     reply = "Below are all the matched items that you can deliver. Choose the Donation ID that mostly suits you:\n"
     for undelivered_item in undelivered_items:
@@ -548,7 +572,11 @@ def start_delivering(update: Update, context: CallbackContext) -> int:
     return CHOOSE_DONATION
 
 def volunteer_chose_donation(update: Update, context: CallbackContext) -> int:
+<<<<<<< HEAD
+    reply_keyboard=['Cancel']
+=======
     reply_keyboard=[['Cancel']]
+>>>>>>> 575f9221d9f83957cdb0413090e879cdd8983401
     donation_id = update.message.text
     Utils.set_donation_as_being_delivered(donation_id)
     update.message.reply_text(
@@ -567,7 +595,11 @@ def delivery_success_id(update: Update, context: CallbackContext) -> int:
 
 
 def delivery_failure_id(update: Update, context: CallbackContext) -> int:
+<<<<<<< HEAD
+    reply_keyboard=['Cancel']
+=======
     reply_keyboard=[['Cancel']]
+>>>>>>> 575f9221d9f83957cdb0413090e879cdd8983401
     update.message.reply_text(
         "Please enter the delivery_id we provided you to mark it in our DB as failure. But don't worry, there are "\
         "Many good people like you who are willing to help, and they will deliver the items!",
@@ -588,7 +620,11 @@ def mark_delivery_as_success(update: Update, context: CallbackContext) -> int:
 
 
 def mark_delivery_as_failure(update: Update, context: CallbackContext) -> int:
+<<<<<<< HEAD
+    reply_keyboard=['Cancel']
+=======
     reply_keyboard=[['Cancel']]
+>>>>>>> 575f9221d9f83957cdb0413090e879cdd8983401
     delivery_id = update.message.text
     Utils.mark_delivery_as_failure(int(delivery_id))
     update.message.reply_text(
@@ -638,7 +674,11 @@ def choose_offer(update: Update, context: CallbackContext) -> int:
     return SAVE_OFFER
 
 def save_offer(update: Update, context: CallbackContext) -> int:  
+<<<<<<< HEAD
+    reply_keyboard=[['Cancel']]  
+=======
     reply_keyboard=[['Cancel']] 
+>>>>>>> 575f9221d9f83957cdb0413090e879cdd8983401
     user = update.message.from_user
     user_id = user.id
     text = update.message.text
@@ -855,6 +895,7 @@ def update_need_pickedup(update: Update, context: CallbackContext) -> int:
 ###########################################################################################################################################################
 # Confirm_Delivery
 ###########################################################################################################################################################
+<<<<<<< HEAD
 
 def confirm_delivery(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
@@ -969,6 +1010,122 @@ def start_campaign(update: Update, context: CallbackContext) -> int:
 
 def camp_name(update: Update, context: CallbackContext) -> int:
 
+=======
+
+def confirm_delivery(update: Update, context: CallbackContext) -> int:
+    user = update.message.from_user
+    user_id = user.id
+
+    if not Utils.user_is_victim(user_id):
+        update.message.reply_text(
+            "You did not request any need."
+        )
+        return ConversationHandler.END
+    else:
+        reply_keyboard = [['I received the delivery'],
+                      ['I haven\'t received the deilvery']]
+
+        update.message.reply_text(
+            "Please choose wether you received your need or not.",
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+        )
+        return CHOOSE_CONFIRM
+
+def delivery_received(update: Update, context: CallbackContext) -> int:
+    user = update.message.from_user
+    user_id = user.id
+
+    a = utilities.requested_needs(user_id)
+
+    update.message.reply_text(
+            "Here are the needs you have requested"
+        )
+
+    for x in a:
+        update.message.reply_text(
+            "Need ID: " f'{x[0]}''\n'
+            "Description: " f'{x[1]}'
+        )
+
+    update.message.reply_text(
+            "Please provide me with the need ID you have received"
+        )
+
+    return RECEIVED_NEED
+
+def  delivery_received_DB(update: Update, context: CallbackContext) -> int:
+    user = update.message.from_user
+    user_id = user.id
+    text = update.message.text
+
+    needid = int(text)
+
+    utilities.update_confirmation(user_id,needid , 1)
+
+    update.message.reply_text(
+            "Thank you."
+        )
+    return ConversationHandler.END
+
+def delivery_not_received(update: Update, context: CallbackContext) -> int:
+    user = update.message.from_user
+    user_id = user.id
+
+    a = utilities.requested_needs(user_id)
+
+    update.message.reply_text(
+            "Here are the needs you have requested"
+        )
+
+    for x in a:
+        update.message.reply_text(
+            "Need ID: " f'{x[0]}''\n'
+            "Description: " f'{x[1]}'
+        )
+
+    update.message.reply_text(
+            "Please provide me with the need ID of the need you have not received."
+        )
+
+    return NOT_RECEIVED_NEED
+
+def  delivery_not_received_DB(update: Update, context: CallbackContext) -> int:
+    user = update.message.from_user
+    user_id = user.id
+    text = update.message.text
+
+    needid = int(text)
+
+    utilities.update_confirmation(user_id,needid , 2)
+
+    update.message.reply_text(
+            "We will contact the volunteer to see what is the problem."
+        )
+    return ConversationHandler.END
+
+###########################################################################################################################################################
+# Start Campaign
+###########################################################################################################################################################
+
+def start_campaign(update: Update, context: CallbackContext) -> int:
+    user = update.message.from_user
+    user_id = user.id
+
+    c1.ownerID = user_id
+
+    reply_keyboard = [['Sounds good, let\'s go!'],['Exit']]
+
+    update.message.reply_text(
+            "Hello! You are about to start a Campaign."
+            "But first, I need to know some information about this Campaign.",
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+        )
+
+    return START_CAMP
+
+def camp_name(update: Update, context: CallbackContext) -> int:
+
+>>>>>>> 575f9221d9f83957cdb0413090e879cdd8983401
     reply_keyboard = [['Cancel']]
     update.message.reply_text(
             "Please write the name of your campaign.",
