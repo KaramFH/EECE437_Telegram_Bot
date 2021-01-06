@@ -376,6 +376,7 @@ def offer_registered( update: Update, context: CallbackContext)-> int:
 def request_type ( update: Update, context: CallbackContext)-> int:
     request.append(u1.UserID)
     request.append(u1.ChatID)
+    #reply_keyboard = [['Cancel']]
     reply_keyboard = Utils.get_all_types_as_list_for_request()
     update.message.reply_text(
         'We will assist you if god wills, please choose what type of need you want to request...',
