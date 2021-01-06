@@ -1,6 +1,6 @@
 # EECE437_Telegram_Bot
 
-Lebanon and the Lebanese people have witnessed a lot of problems and challenges during the past year. From the economic crisis that resulted in an inflation rate of approximately 82% to the Beirut explosion on August 4 that left hundreds of Lebanese families homeless, harmed a lot of small businesses, and killed approximately 200 people. Not to mention the global pandemic and the spread of COVID-19 virus that had furthermore worsened our economy, closed many small and independent businesses, and increased unemployment.
+Lebanon and the Lebanese people have witnessed a lot of problems and challenges during the past year. From the economic crisis that resulted in an inflation rate of approximately 400% to the Beirut explosion on August 4 that left hundreds of Lebanese families homeless, harmed a lot of small businesses, and killed approximately 200 people. Not to mention the global pandemic and the spread of COVID-19 virus that had furthermore worsened our economy, closed many small and independent businesses, and increased unemployment.
 
 These events have left many people below poverty line unable to fulfill their basic needs. Donations and aids are the only reason keeping these people alive and in a fair shape.
 
