@@ -268,7 +268,7 @@ def update_location_bot_text(update: Update, context: CallbackContext) -> int:
     return ConversationHandler.END
 
 def nothing_to_update(Update: Update, context: CallbackContext) -> int:
-    update.message.reply_text(
+    Update.message.reply_text(
         "Feel free to update your info anytime!"
     )
     return ConversationHandler.END
@@ -295,13 +295,11 @@ def donation_description(update: Update, context: CallbackContext)-> int:
     if offer.type == 'other':
         update.message.reply_text(
             'Please provide the name of the donation type',
-            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
         return NEW_DONATION_TYPE
     else:
         update.message.reply_text(
             'Great! please provide a description of your donation',
-            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
     return OFFER_QUANTITY
 
