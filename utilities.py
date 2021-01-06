@@ -304,16 +304,6 @@ def cancel_delivery_assigned(needID,userid) :
 
 
 
-
-def get_chatID(userid):    # put in Utils file ( a7san)
-
-    query = "SELECT chatId from user where userid = " + str(userid)
-    cr.execute(query)
-    chatIDs = cr.fetchall()
-    print(chatIDs)
-    return (chatIDs)
-
-
 def DeliveredNeeds_receivers() :        # return list of tuples = [ (chatID , 'Need description), (ChatID , 'Need description')]
 
     dict = []
@@ -326,9 +316,19 @@ def DeliveredNeeds_receivers() :        # return list of tuples = [ (chatID , 'N
     return dict
 
 
-def update_confirmation(userID , value) :      # if needy person confirmed receival : set value = 1 , if No set = 2
+def update_confirmation(userID , needID, value) :      # if needy person confirmed receival : set value = 1 , if No set = 2
 
-    query = " UPDATE need SET confirmed = {} where userid = "+ str(userID)
+    query = " UPDATE need SET confirmed = {} where userid = %s and needid = %s" % (userID,needID)
     cr.execute(query.format(int(value)))
     mydb.commit()
+
+
+def requested_needs(user_id): #returns the needs the user requested return list of tuples = [ (needID , 'Need description), (needID , 'Need description')]
+    list = []
+    query = "SELECT needid, description from need WHERE confirmed = 0 and userid = " + str(user_id)
+    cr.execute(query)
+    ids_description = cr.fetchall()
+    for info in ids_description :
+        list.append( (int(info[0]), info[1]) )
+    return list
 

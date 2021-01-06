@@ -38,7 +38,7 @@ def main() -> None:
     # the bot token is unique for every bot
 
     # This Token cannot be shared because it will allow anyone to control the bot
-    BOT_TOKEN = '1481007102:AAHlLo8o1iGO7YFmwXsDUIumJetWdH3tcNY'
+    BOT_TOKEN = '1474571841:AAFGiL12zLiMtt_P0e89YPIkm8HmXTLKuNs'
     updater = Updater(BOT_TOKEN, use_context=True)
 
     # Get the dispatcher to register handlers
@@ -51,6 +51,7 @@ def main() -> None:
     #dispatcher.add_handler(handlers_factory.create_cancel_handler())
     dispatcher.add_handler(handlers_factory.create_need_handler())
     dispatcher.add_handler(handlers_factory.create_update_need_handler())
+    dispatcher.add_handler(handlers_factory.create_confirm_delivery_handler())
     # _thread.start_new_thread(manager.find_matched_items, ())
     # _thread.start_new_thread(matcher.run_matcher, ())
 
