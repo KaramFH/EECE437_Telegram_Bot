@@ -298,3 +298,29 @@ def user_is_victim(user_id):
     query = "SELECT needid from need where userid = " + str(user_id)
     cr.execute(query)
     return cr.fetchall().__len__() >= 1
+
+def create_new_campaign(userID, name,description, latitude, longitude):
+    query = "INSERT into campaign (userID,name,description, locationlatitude, locationlongitude ) VALUES ( " \
+            " %d, '%s', ' %s', %f,%f)" % (int(userID) , name, description, latitude,longitude)
+    # q1 = query.format(userID1, firstname, lastname, birthdate, PhoneNumber, chatID)
+    print(query)
+    cr.execute(query)
+    mydb.commit()
+    print("campaign %s added " % name)
+
+def find_nearby_users(lat,lon):
+    query = "SELECT userID FROM user"
+    cr.execute(query)
+    available_users = cr.fetchall()
+    nearby_available_users = []
+    for x in available_users:
+         u_query = "SELECT addresslatitude, addresslongitude FROM user WHERE userid =" + str(x[0])
+         cr.execute(u_query)
+         available_users_coor = cr.fetchall()
+         a = (lat,lon)
+         b = available_users_coor[0]
+         #c = (float(b[0]),float(b[1]))
+         if distance.distance(a,b).km < 7:
+            nearby_available_users.append(x[0])
+    return nearby_available_users
+

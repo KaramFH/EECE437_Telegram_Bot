@@ -3,6 +3,7 @@ from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from datetime import datetime
 from telegram import Location
 from user import User
+from campaign import Campaign
 from typing import Dict
 from Offer import Offer
 import Utils
@@ -27,6 +28,7 @@ import matcher
 
 # Class User
 u1 = User()
+c1 = Campaign()
 offer = Offer()
 request = []
 
@@ -35,13 +37,13 @@ CHOOSING, PHONE_NUMBER, PHONE_NUMBER_YN, BIRTHDATE, BIRTHDATE_YN, ADDRESS, ADDRE
 OFFER_TYPE, OFFER_DESCRIPTION, OFFER_QUANTITY, OFFER_done, REQUEST_TYPE, REQUEST_DESCRIPTION, REQUEST_QUANTITY, REQCASH_ESTIMATE, \
 REQUEST_NOTED, NEW_VOLUNTEER, CHOOSE_VALUES_TO_UPDATE, U_ADDRESS, U_LOCATION, START_DELIVERY, DELIVERY_SUCCESS, DELIVERY_FAILURE, CHOOSE_DONATION, \
 CHOOSE_OFFER, SAVE_OFFER, ASK_OFFER_ID, DELIVER_NEEDS, UPDATE_NEED, ASK_NEED_ID,NEW_DONATION_TYPE, ESTIMATING_NEW_DONATION_VALUE, NEW_REQUEST_TYPE, \
-ESTIMATING_NEW_NEED_VALUE, GO_MENU, CHOOSE_CONFIRM, RECEIVED_NEED, NOT_RECEIVED_NEED = \
-    range(43)
+ESTIMATING_NEW_NEED_VALUE, GO_MENU, CHOOSE_CONFIRM, RECEIVED_NEED, NOT_RECEIVED_NEED, START_CAMP, CAMP_NAME, CAMP_D, CAMP_L, CONCLUDE_CAMP = \
+    range(48)
 
 
 def actions(update: Update, context: CallbackContext) -> int:
     reply_keyboard = [['Donate'],['Volunteer'],['Request'],
-                      ['Nothing'],['Deliver'],['Show Offers'],['Update Pickup'],['Show Needs'],['Update on picked up needs']]
+                      ['Nothing'],['Deliver'],['Show Offers'],['Update Pickup'],['Show Needs'],['Update on picked up needs'],['Create Campaign']]
     update.message.reply_text(
         "Please choose what you want to do.",
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
@@ -148,8 +150,8 @@ def location(update: Update, context: CallbackContext) -> int:
     reply_keyboard = [['Sure!', 'Cancel']]
     user = update.message.from_user
     user_location = update.message.location
-    u1.AddressLatitude = str(user_location.latitude)
-    u1.AddressLongitude = str(user_location.longitude)
+    u1.AddressLatitude = user_location.latitude
+    u1.AddressLongitude = user_location.longitude
     update.message.reply_text(
         'Thank you! your information will now be saved in the database to help with your needs. Press Cancel to delete everything',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
@@ -943,4 +945,98 @@ def  delivery_not_received_DB(update: Update, context: CallbackContext) -> int:
     update.message.reply_text(
             "We will contact the volunteer to see what is the problem."
         )
+    return ConversationHandler.END
+
+###########################################################################################################################################################
+# Start Campaign
+###########################################################################################################################################################
+
+def start_campaign(update: Update, context: CallbackContext) -> int:
+    user = update.message.from_user
+    user_id = user.id
+
+    c1.ownerID = user_id
+
+    reply_keyboard = [['Sounds good, let\'s go!'],['Exit']]
+
+    update.message.reply_text(
+            "Hello! You are about to start a Campaign."
+            "But first, I need to know some information about this Campaign.",
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+        )
+
+    return START_CAMP
+
+def camp_name(update: Update, context: CallbackContext) -> int:
+
+    reply_keyboard = [['Cancel']]
+    update.message.reply_text(
+            "Please write the name of your campaign.",
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+        )
+
+    return CAMP_NAME
+
+def camp_name_text(update: Update, context: CallbackContext) -> int:
+    reply_keyboard = [['Cancel']]
+    text = update.message.text
+    c1.name = text
+    update.message.reply_text(
+            "Thank you. Now please write the description of the campaign.",
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+        )
+    return CAMP_D
+
+def camp_description(update: Update, context: CallbackContext) -> int:
+    reply_keyboard = [['Cancel']]
+    text = update.message.text
+    c1.description = text
+    update.message.reply_text(
+            "Thank you. Now please send me the location of the campaign.",
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+        )
+    return CAMP_L
+
+def camp_location(update: Update, context: CallbackContext) -> int:
+    reply_keyboard = [['Cancel'],['Sure!']]
+    user = update.message.from_user
+    user_location = update.message.location
+    c1.latitude = user_location.latitude
+    c1.longitude = user_location.longitude
+
+    update.message.reply_text(
+        'Thank you! The information about your campaign will now be saved in the database.''\n'
+        "All nearby users will be notified about your campaign."'\n'
+        "Press Cancel to delete everything.",
+        reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+    )
+    return CONCLUDE_CAMP
+
+def received_information_camp(update: Update, context: CallbackContext) -> int:
+    user = update.message.from_user
+    user_id = user.id
+    update.message.reply_text(
+        "Thank you for signing up your campaign! These are the information we know about your campaign: \n"
+        "Name: "f'{c1.name}''\n'
+        "Owner: "f'{user.first_name}''\n'
+        "Description: "f'{c1.description}''\n'
+    )
+
+    Utils.create_new_campaign(c1.ownerID, c1.name,c1.description, c1.latitude, c1.longitude)
+
+    a = Utils.find_nearby_users(c1.latitude,c1.longitude)
+    pn = Utils.get_phonenumber(user_id)
+
+    if len(a) > 0:
+        msg = "There is an ongoing campaign near you. It's name is: ",c1.name,". Contact ",user.first_name," for more info. His number is: ",pn
+        for x in a:
+            context.bot.send_message(chat_id= int(x),text = msg)
+
+    return ConversationHandler.END
+
+def cancel_camp(update: Update, context: CallbackContext) -> int:
+    c1.reset()
+    update.message.reply_text(
+        "Until next time!"
+    )
     return ConversationHandler.END

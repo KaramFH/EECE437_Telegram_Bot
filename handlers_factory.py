@@ -74,7 +74,8 @@ def create_start_handler():
                 MessageHandler(Filters.regex('^Show Offers$'), pickup_offers),
                 MessageHandler(Filters.regex('^Show Needs$'), show_needs),
                 MessageHandler(Filters.regex('^Update on picked up needs$'), ask_for_needid),
-                MessageHandler(Filters.regex('^Nothing$') | Filters.regex('^Done$'), done)
+                MessageHandler(Filters.regex('^Nothing$') | Filters.regex('^Done$'), done),
+                MessageHandler(Filters.regex('^Create Campaign$'), start_campaign),
             ],
             REQUEST_TYPE: [
                 MessageHandler(Filters.text, request_description),
@@ -176,6 +177,26 @@ def create_start_handler():
             GO_MENU: [
                 MessageHandler(Filters.regex('^Menu$'), actions),
                 MessageHandler(Filters.regex('^Exit$'), done)
+            ],
+            START_CAMP: [
+                MessageHandler(Filters.regex('^Sounds good, let\'s go!$'), camp_name),
+                MessageHandler(Filters.regex('^Exit$'), done)
+            ],
+            CAMP_NAME: [
+                MessageHandler(Filters.text, camp_name_text),
+                MessageHandler(Filters.regex('^Cancel$'), done)
+            ],
+            CAMP_D: [
+                MessageHandler(Filters.text, camp_description),
+                MessageHandler(Filters.regex('^Cancel$'), done)
+            ],
+            CAMP_L: [
+                MessageHandler( Filters.location,camp_location),
+                MessageHandler(Filters.regex('^Cancel$'), done),
+            ],
+            CONCLUDE_CAMP: [
+                MessageHandler(Filters.regex('^Sure!$'), received_information_camp),
+                MessageHandler(Filters.regex('^Cancel$'), cancel_camp),
             ]
         },
         fallbacks = [
