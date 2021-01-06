@@ -287,6 +287,7 @@ def donation_type(update: Update, context: CallbackContext) -> int:
     return OFFER_DESCRIPTION
 
 def donation_description(update: Update, context: CallbackContext)-> int:
+    reply_keyboard = [['Cancel']]
     type1 = update.message.text
     print(type1)
     offer.type = type1
@@ -295,13 +296,15 @@ def donation_description(update: Update, context: CallbackContext)-> int:
     if offer.type == 'other':
         update.message.reply_text(
             'Please provide the name of the donation type',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
         return NEW_DONATION_TYPE
     else:
         update.message.reply_text(
             'Great! please provide a description of your donation',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
-    return OFFER_QUANTITY
+        return OFFER_QUANTITY
 
 #ERROR HERE K.H on 1/5/2021
 def new_donation_type(update: Update, context: CallbackContext)-> int:

@@ -88,6 +88,7 @@ def get_all_types_as_list():
     for d_type in donation_types:
         donation_types_names.append([d_type[0]])
     donation_types_names.append(['other'])
+    donation_types_names.append(['Cancel'])
     #print("donation_types = " + donation_types)
     return donation_types_names
 
@@ -98,6 +99,7 @@ def get_all_types_as_list_for_request():
     donation_types_names = []
     for d_type in donation_types:
         donation_types_names.append([d_type[0]])
+    donation_types_names.append(['Cancel'])
     #print("donation_types = " + donation_types)
     return donation_types_names
 
