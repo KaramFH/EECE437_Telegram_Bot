@@ -230,7 +230,7 @@ def update(update: Update, context: CallbackContext) -> int:
         return CHOOSE_VALUES_TO_UPDATE
 
 def update_address_bot(update: Update, context: CallbackContext) -> int:
-    reply_keyboard=['Cancel']
+    reply_keyboard=[['Cancel']]
     update.message.reply_text(
         "Please write your new address.",
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
@@ -248,7 +248,7 @@ def update_address_bot_text(update: Update, context: CallbackContext) -> int:
     return ConversationHandler.END
 
 def update_location_bot(update: Update, context: CallbackContext) -> int:
-    reply_keyboard=['Cancel']
+    reply_keyboard=[['Cancel']]
     update.message.reply_text(
         "Please send me your new location",
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
@@ -279,7 +279,7 @@ def nothing_to_update(Update: Update, context: CallbackContext) -> int:
 
 def donation_type(update: Update, context: CallbackContext) -> int:
     # A.Y: 3-1-2020
-    reply_keyboard = ['Cancel',Utils.get_all_types_as_list()]
+    reply_keyboard = [['Cancel',Utils.get_all_types_as_list()]]
     update.message.reply_text(
         'God bless you, please choose what type of donation you are willing to offer',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
@@ -287,7 +287,7 @@ def donation_type(update: Update, context: CallbackContext) -> int:
     return OFFER_DESCRIPTION
 
 def donation_description(update: Update, context: CallbackContext)-> int:
-    reply_keyboard=['Cancel']
+    reply_keyboard=[['Cancel']]
     type1 = update.message.text
     print(type1)
     offer.type = type1
@@ -308,7 +308,7 @@ def donation_description(update: Update, context: CallbackContext)-> int:
 
 #ERROR HERE K.H on 1/5/2021
 def new_donation_type(update: Update, context: CallbackContext)-> int:
-    reply_keyboard=['Cancel']
+    reply_keyboard=[['Cancel']]
     new_donation_name = update.message.text
     offer.type = new_donation_name
     print("New offer type is: " + str(offer.type))
@@ -329,7 +329,7 @@ def new_donation_type(update: Update, context: CallbackContext)-> int:
         return ESTIMATING_NEW_DONATION_VALUE
 
 def estimating_new_donation_value(update: Update, context: CallbackContext)-> int:
-    reply_keyboard=['Cancel']
+    reply_keyboard=[['Cancel'],['50000'],['100000']]
     cash_value = update.message.text
     if isinstance(cash_value, int):
         estimated_value = int(cash_value)
@@ -364,7 +364,7 @@ def donation_quantity(update: Update, context: CallbackContext)-> int:
 
 #ERROR HERE Karam Hasan on 1/5/2021: There is an error when running this function please A.Y check it out    
 def offer_registered( update: Update, context: CallbackContext)-> int: 
-    reply_keyboard=['Cancel']
+    reply_keyboard=[['Cancel']]
     qt = update.message.text
     offer.QuantityAmount = qt
     Utils.add_offer(offer.type, offer.userID, offer.description, offer.QuantityAmount)
@@ -390,7 +390,7 @@ def request_type ( update: Update, context: CallbackContext)-> int:
     return REQUEST_TYPE
 
 def request_description( update: Update, context: CallbackContext)-> int:
-    reply_keyboard=['Cancel']
+    reply_keyboard=[['Cancel']]
     request_type = update.message.text
     request.append(request_type)
     update.message.reply_text(
@@ -400,7 +400,7 @@ def request_description( update: Update, context: CallbackContext)-> int:
     return REQUEST_DESCRIPTION
 
 def new_request_type(update: Update, context: CallbackContext)-> int:
-    reply_keyboard=['Cancel']
+    reply_keyboard=[['Cancel']]
     new_donation_name = update.message.text
     offer.type = new_donation_name
     print("New request type is: " + str(offer.type))
@@ -421,7 +421,7 @@ def new_request_type(update: Update, context: CallbackContext)-> int:
         return ESTIMATING_NEW_NEED_VALUE
 
 def estimating_new_need_value(update: Update, context: CallbackContext)-> int:
-    reply_keyboard=['Cancel']
+    reply_keyboard=[['Cancel']]
     cash_value = update.message.text
     if isinstance(cash_value, int):
         estimated_value = int(cash_value)
@@ -548,7 +548,7 @@ def start_delivering(update: Update, context: CallbackContext) -> int:
     return CHOOSE_DONATION
 
 def volunteer_chose_donation(update: Update, context: CallbackContext) -> int:
-    reply_keyboard=['Cancel']
+    reply_keyboard=[['Cancel']]
     donation_id = update.message.text
     Utils.set_donation_as_being_delivered(donation_id)
     update.message.reply_text(
@@ -558,7 +558,7 @@ def volunteer_chose_donation(update: Update, context: CallbackContext) -> int:
     return ACTIONS
 
 def delivery_success_id(update: Update, context: CallbackContext) -> int:
-    reply_keyboard=['Cancel']
+    reply_keyboard=[['Cancel']]
     update.message.reply_text(
         "Please enter the delivery_id we provided you to mark it in our DB as successful",
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),   
@@ -567,7 +567,7 @@ def delivery_success_id(update: Update, context: CallbackContext) -> int:
 
 
 def delivery_failure_id(update: Update, context: CallbackContext) -> int:
-    reply_keyboard=['Cancel']
+    reply_keyboard=[['Cancel']]
     update.message.reply_text(
         "Please enter the delivery_id we provided you to mark it in our DB as failure. But don't worry, there are "\
         "Many good people like you who are willing to help, and they will deliver the items!",
@@ -577,7 +577,7 @@ def delivery_failure_id(update: Update, context: CallbackContext) -> int:
 
 
 def mark_delivery_as_success(update: Update, context: CallbackContext) -> int:
-    reply_keyboard=['Cancel']
+    reply_keyboard=[['Cancel']]
     delivery_id = update.message.text
     Utils.mark_delivery_as_success(int(delivery_id))
     update.message.reply_text(
@@ -588,7 +588,7 @@ def mark_delivery_as_success(update: Update, context: CallbackContext) -> int:
 
 
 def mark_delivery_as_failure(update: Update, context: CallbackContext) -> int:
-    reply_keyboard=['Cancel']
+    reply_keyboard=[['Cancel']]
     delivery_id = update.message.text
     Utils.mark_delivery_as_failure(int(delivery_id))
     update.message.reply_text(
@@ -602,7 +602,7 @@ def mark_delivery_as_failure(update: Update, context: CallbackContext) -> int:
 ###########################################################################################################################################################
 
 def pickup_offers(update: Update, context: CallbackContext) -> int:
-    reply_keyboard1=['Cancel']
+    reply_keyboard1=[['Cancel']]
     a = utilities.get_UnpickedUpOffers()
     user = update.message.from_user
     user_id = user.id
@@ -630,7 +630,7 @@ def pickup_offers(update: Update, context: CallbackContext) -> int:
         return CHOOSE_OFFER
 
 def choose_offer(update: Update, context: CallbackContext) -> int:
-    reply_keyboard=['Cancel']
+    reply_keyboard=[['Cancel']]
     update.message.reply_text(
              "Please type the offer ID that you want to pickup.",
              reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
@@ -638,7 +638,7 @@ def choose_offer(update: Update, context: CallbackContext) -> int:
     return SAVE_OFFER
 
 def save_offer(update: Update, context: CallbackContext) -> int:  
-    reply_keyboard=['Cancel']  
+    reply_keyboard=[['Cancel']] 
     user = update.message.from_user
     user_id = user.id
     text = update.message.text
@@ -675,7 +675,7 @@ def save_offer(update: Update, context: CallbackContext) -> int:
 ###########################################################################################################################################################
 
 def ask_for_offerid(update: Update, context: CallbackContext) -> int:
-    reply_keyboard=['Cancel']
+    reply_keyboard=[['Cancel']]
     user = update.message.from_user
     user_id = user.id
 
@@ -700,7 +700,7 @@ def ask_for_offerid(update: Update, context: CallbackContext) -> int:
         return ASK_OFFER_ID
 
 def update_pickup(update: Update, context: CallbackContext) -> int:
-    reply_keyboard=['Cancel']
+    reply_keyboard=[['Cancel']]
     user = update.message.from_user
     user_id = user.id
     text = update.message.text
@@ -720,7 +720,7 @@ def update_pickup(update: Update, context: CallbackContext) -> int:
 ###########################################################################################################################################################
 
 def show_needs(update: Update, context: CallbackContext) -> int:
-    reply_keyboard1=['Cancel']
+    reply_keyboard1=[['Cancel']]
     a = utilities.get_UndeliveredNeeds()
     user = update.message.from_user
     user_id = user.id
@@ -750,7 +750,7 @@ def show_needs(update: Update, context: CallbackContext) -> int:
         return DELIVER_NEEDS
 
 def choose_need(update: Update, context: CallbackContext) -> int:
-    reply_keyboard=['Cancel']
+    reply_keyboard=[['Cancel']]
     update.message.reply_text(
              "Please type the need ID that you want to deliver",
              reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
@@ -797,7 +797,7 @@ def update_need(update: Update, context: CallbackContext) -> int:
 ###########################################################################################################################################################
 
 def ask_for_needid(update: Update, context: CallbackContext) -> int:
-    reply_keyboard=['Cancel']
+    reply_keyboard=[['Cancel']]
     user = update.message.from_user
     user_id = user.id
 
