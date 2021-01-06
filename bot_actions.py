@@ -291,7 +291,7 @@ def donation_description(update: Update, context: CallbackContext)-> int:
     # A.Y: 3-1-2020, Changed the logic
     if offer.type == 'other':
         update.message.reply_text(
-            'Please provide the name of the donation type',
+            'Please provide the name of the donation type and description',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
         return NEW_DONATION_TYPE
@@ -306,7 +306,7 @@ def new_donation_type(update: Update, context: CallbackContext)-> int:
     reply_keyboard=[['Cancel']]
     new_donation_name = update.message.text
     offer.type = new_donation_name
-    print("New offer type is: " + str(offer.type))
+    #print("New offer type is: " + str(offer.type))
     
     # This case happens when the user chooses 'other' and then enter a type that already rxists.
     # Example: medical. In this case, we should not create a new type in the database. 
@@ -338,7 +338,7 @@ def estimating_new_donation_value(update: Update, context: CallbackContext)-> in
     offer.cash_value = estimated_value
     Utils.create_new_donationtype(offer.type, estimated_value)
     update.message.reply_text(
-        'Thanks for choosing to donate a new item! Now provide a description for your donation.',
+        'Thanks for choosing to donate a new item! Now provide a quantity for your donation.',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
     return OFFER_QUANTITY
@@ -356,7 +356,6 @@ def donation_quantity(update: Update, context: CallbackContext)-> int:
 
 
 def offer_registered( update: Update, context: CallbackContext)-> int: 
-    reply_keyboard=[['Cancel']]
     qt = update.message.text
     offer.QuantityAmount = qt
     Utils.add_offer(offer.type, offer.userID, offer.description, offer.QuantityAmount)
@@ -389,6 +388,8 @@ def request_description( update: Update, context: CallbackContext)-> int:
         'please provide us with a description of your need...',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
+    if request_type == 'other':
+        return NEW_REQUEST_TYPE
     return REQUEST_DESCRIPTION
 
 def new_request_type(update: Update, context: CallbackContext)-> int:
@@ -422,7 +423,7 @@ def estimating_new_need_value(update: Update, context: CallbackContext)-> int:
             'This value is invalid. Please type a number.',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
-        return ESTIMATING_NEW_DONATION_VALUE
+        return ESTIMATING_NEW_NEED_VALUE
     
     offer.cash_value = estimated_value
     Utils.create_new_donationtype(offer.type, estimated_value)
@@ -430,7 +431,7 @@ def estimating_new_need_value(update: Update, context: CallbackContext)-> int:
         'We know now the value of your need. Now provide a description for your donation.',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
-    return REQUEST_QUANTITY
+    return REQUEST_DESCRIPTION
 
 def request_quantity ( update: Update, context: CallbackContext)-> int:
     print(request)
