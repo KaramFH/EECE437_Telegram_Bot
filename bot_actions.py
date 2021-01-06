@@ -13,9 +13,6 @@ import telegram
 import logging
 import matcher
 
-#karam hasan was here
-
-#context.bot.send_message(chat_id=chat_id, text='Hi User, Add Fund to your account to start trading')
 
 ##############################################################################################################################################################################
 # Start command
@@ -306,7 +303,6 @@ def donation_description(update: Update, context: CallbackContext)-> int:
         )
         return OFFER_QUANTITY
 
-#ERROR HERE K.H on 1/5/2021
 def new_donation_type(update: Update, context: CallbackContext)-> int:
     reply_keyboard=[['Cancel']]
     new_donation_name = update.message.text
@@ -360,7 +356,6 @@ def donation_quantity(update: Update, context: CallbackContext)-> int:
     return OFFER_done   
 
 
-#ERROR HERE Karam Hasan on 1/5/2021: There is an error when running this function please A.Y check it out    
 def offer_registered( update: Update, context: CallbackContext)-> int: 
     reply_keyboard=[['Cancel']]
     qt = update.message.text
@@ -450,7 +445,7 @@ def request_quantity ( update: Update, context: CallbackContext)-> int:
     return REQUEST_QUANTITY
 
 # this stage will be used to estimate cash amount needed for non-monetary needs, exp: medicine,laptops,books...
-#for now we will skip this stage
+
 
 ##################################~~~~~~~~~~~~~~~~~~~~~~~~~~#############################################################
 def ReqCash_estimate(update: Update, context: CallbackContext) -> int:
