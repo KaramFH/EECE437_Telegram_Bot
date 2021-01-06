@@ -102,7 +102,7 @@ def text_for_Offer( offerID):        # gets offers UNpickied up with matched nee
 
 def text_for_need(needID):        
 
-    offer_info = get_offer_full_info(needID)
+    offer_info = get_need_full_info(needID)
     Need_as_text = "" \
         "  ***  NEED : " + "\n" \
         "        Need ID =  " + str(needID) + "\n" \
@@ -134,6 +134,7 @@ def get_UnpickedUpOffers() :                      # Get offers unpicked up  and 
 
 
 def details_of_user(userid):
+
     query = "SELECT * from user WHERE userid =" + str(userid)
     cr.execute(query)
     details = cr.fetchall()
@@ -153,8 +154,8 @@ def update_offer_assigned(offerID, userID) :
     offerIDs = str(offerIDs)+ ","+ str(offerID)    # add offers in the following matter : "id1 , id2 , id3..."
     updated = offerIDs.replace( 'None' +",", "")
 
-    query3 = "UPDATE volunteer SET offer_pickup_id = '{}' WHERE userID = " + str(userID)
-    cr.execute(query3.format(offerIDs))
+    query3 = "UPDATE volunteer SET offer_pickup_id = '{}', state = 3 WHERE userID = " + str(userID)
+    cr.execute(query3.format(updated))
     mydb.commit()
 
 def cancel_offer_assigned(offerID,userid) :
@@ -168,7 +169,7 @@ def cancel_offer_assigned(offerID,userid) :
     offerIDs = cr.fetchall()[0][0]
     updated = offerIDs.replace( str(offerID) +",", "")
 
-    query3 = "UPDATE volunteer SET offer_pickup_id = '{}' WHERE userID = " + str(userid)
+    query3 = "UPDATE volunteer SET offer_pickup_id = '{}' , state =1 WHERE userID = " + str(userid)
     cr.execute(query3.format(updated))
     mydb.commit()
 
@@ -209,8 +210,6 @@ def show_assignedNeeds( userid):
 
     return fulltext
 
-
-
 def set_offer_pickedup(offerid, volunteerID):
 
     query = "UPDATE offering SET isPickedUp = 1 WHERE offeringID = " + str(offerid)
@@ -223,7 +222,7 @@ def set_offer_pickedup(offerid, volunteerID):
     offerIDs = str(offerIDs)+ ","+ str(offerid)    # add offers in the following matter : "id1 , id2 , id3..."
     updated = offerIDs.replace( 'None' +",", "")
 
-    query3 = "UPDATE volunteer SET PickedUp_offersID = '{}' WHERE userID = " + str(volunteerID)
+    query3 = "UPDATE volunteer SET PickedUp_offersID = '{}', state = 5 WHERE userID = " + str(volunteerID)
     cr.execute(query3.format(offerIDs))
     mydb.commit()
 
@@ -263,7 +262,7 @@ def update_need_assigned(needID, userID):
     if (str(needIDs).__contains__('None')):
         needIDs = needIDs.replace('None,', "")
    
-    query = "UPDATE volunteer SET NeedTodeliver_id = '{}' WHERE userID = " + str(userID)
+    query = "UPDATE volunteer SET NeedTodeliver_id = '{}', state = 4 WHERE userID = " + str(userID)
     cr.execute(query.format(needIDs))
     mydb.commit()
 

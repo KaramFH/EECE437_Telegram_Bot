@@ -226,21 +226,21 @@ def set_volunteer_delivering(userid):
 
 
 
-def get_all_undelivered_items():
-    query = "SELECT donationid, offeringid, needid from donationlog WHERE isDelivered = 0"
-    cr.execute(query)
-    undelivered_items = cr.fetchall()
-    undelivered_full_list = []
-    for undelivered_offer in undelivered_items:
-        offer_full_list = get_offer_full_info(undelivered_offer[1]) # quantityamount, description, user_offering_lat, user_offering_long
-        need_full_list =  get_need_full_info(undelivered_offer[2]) # quantityamount, description, user_need_lat,
-        # user_need_long
-        donation_id = undelivered_offer[0]
-        undelivered_full_list.append(donation_id)
-        undelivered_full_list.append(offer_full_list)
-        undelivered_full_list.append(need_full_list)
+# def get_all_undelivered_items():
+#     query = "SELECT donationid, offeringid, needid from donationlog WHERE isDelivered = 0"
+#     cr.execute(query)
+#     undelivered_items = cr.fetchall()
+#     undelivered_full_list = []
+#     for undelivered_offer in undelivered_items:
+#         offer_full_list = get_offer_full_info(undelivered_offer[1]) # quantityamount, description, user_offering_lat, user_offering_long
+#         need_full_list =  get_need_full_info(undelivered_offer[2]) # quantityamount, description, user_need_lat,
+#         # user_need_long
+#         donation_id = undelivered_offer[0]
+#         undelivered_full_list.append(donation_id)
+#         undelivered_full_list.append(offer_full_list)
+#         undelivered_full_list.append(need_full_list)
 
-    return undelivered_full_list
+#     return undelivered_full_list
 
 
 def set_donation_as_being_delivered(delivery_id):
