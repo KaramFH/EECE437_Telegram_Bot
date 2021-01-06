@@ -278,7 +278,7 @@ def get_victimid_from_need(needid):
     return a[0][0]
 
 def check_if_type_exists(new_type_name):
-    query = "SELECT * FROM donationtype WHERE donationtypename=%s" % new_type_name
+    query = "SELECT * FROM donationtype WHERE donationtypename='%s'" % new_type_name
     cr.execute(query)
     type_exists =  cr.fetchall().__len__() > 0
     print("Does this type exist? -> " + type_exists)
