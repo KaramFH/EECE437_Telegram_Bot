@@ -279,7 +279,7 @@ def nothing_to_update(Update: Update, context: CallbackContext) -> int:
 
 def donation_type(update: Update, context: CallbackContext) -> int:
     # A.Y: 3-1-2020
-    reply_keyboard = [['Cancel',Utils.get_all_types_as_list()]]
+    reply_keyboard = [Utils.get_all_types_as_list()]
     update.message.reply_text(
         "God bless you, please choose what type of donation you are willing to offer",
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
