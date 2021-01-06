@@ -326,13 +326,11 @@ def new_donation_type(update: Update, context: CallbackContext)-> int:
         return ESTIMATING_NEW_DONATION_VALUE
 
 def estimating_new_donation_value(update: Update, context: CallbackContext)-> int:
-    reply_keyboard=[['Cancel'],['50000'],['100000']]
+    reply_keyboard=[['Cancel'],['50'],['100']]
     cash_value = update.message.text
-    if isinstance(cash_value, int):
+    try:
         estimated_value = int(cash_value)
-    elif isinstance(cash_value, float):
-        estimated_value = float(cash_value)
-    else:
+    except:
         update.message.reply_text(
             'This value is invalid. Please type a number.',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
