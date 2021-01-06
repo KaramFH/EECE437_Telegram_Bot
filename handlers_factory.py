@@ -335,8 +335,6 @@ def create_update_need_handler():
     )
     return update_need_handler
 
-#A.Y use this Handler
-
 # def create_cancel_handler():
 #     cancel_handler = ConversationHandler(
 #         entry_points=[CommandHandler('Cancel', )],

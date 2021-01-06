@@ -153,7 +153,6 @@ def location(update: Update, context: CallbackContext) -> int:
         'Thank you! your information will now be saved in the database to help with your needs. Press Cancel to delete everything',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
-    #Utils.create_new_user(u1.UserID, u1.FirstName, u1.LastName, u1.Birthdate, u1.PhoneNumber, u1.ChatID)
     return CONCLUDE
 
 # Function that sends a reply to the user summarizing the information sent from the user
@@ -505,7 +504,7 @@ def added_volunteer(update: Update, context: CallbackContext) -> int :
     return GO_MENU
 
 ###########################################################################################################################################################
-# DELIVERING ITEMS A.Y
+# DELIVERING ITEMS (We will not use this.)
 ###########################################################################################################################################################
 
 def deliver(update: Update, context: CallbackContext) -> int:
