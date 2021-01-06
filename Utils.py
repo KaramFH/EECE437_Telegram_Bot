@@ -91,6 +91,16 @@ def get_all_types_as_list():
     #print("donation_types = " + donation_types)
     return donation_types_names
 
+def get_all_types_as_list_for_request():
+    query = "SELECT donationtypename FROM donationtype"
+    cr.execute(query)
+    donation_types = cr.fetchall()
+    donation_types_names = []
+    for d_type in donation_types:
+        donation_types_names.append([d_type[0]])
+    #print("donation_types = " + donation_types)
+    return donation_types_names
+
 # A.Y: create new donation type:
 
 def create_new_donationtype(donation_type_name, estimated_value):
