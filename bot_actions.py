@@ -289,9 +289,8 @@ def donation_type(update: Update, context: CallbackContext) -> int:
 def donation_description(update: Update, context: CallbackContext)-> int:
 <<<<<<< HEAD
 
-    reply_keyboard= [[['Cancel']]]
+    reply_keyboard= [['Cancel']]
 =======
-    reply_keyboard=[['Cancel']]
 >>>>>>> 575f9221d9f83957cdb0413090e879cdd8983401
     type1 = update.message.text
     print(type1)
