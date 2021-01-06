@@ -43,7 +43,7 @@ ESTIMATING_NEW_NEED_VALUE, GO_MENU, CHOOSE_CONFIRM, RECEIVED_NEED, NOT_RECEIVED_
 
 def actions(update: Update, context: CallbackContext) -> int:
     reply_keyboard = [['Donate'],['Volunteer'],['Request'],
-                      ['Nothing'],['Show Offers'],['Update Pickup'],['Show Needs'],['Update on picked up needs'],['Create Campaign']]
+                      ['Nothing'],['Show Offers'],['Update Pickup'],['Show Needs'],['Update on Delivered Needs'],['Create Campaign']]
     update.message.reply_text(
         "Please choose what you want to do.",
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),

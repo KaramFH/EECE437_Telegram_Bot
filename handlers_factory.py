@@ -73,7 +73,7 @@ def create_start_handler():
                 MessageHandler(Filters.regex('^Update Pickup$'), ask_for_offerid ),
                 MessageHandler(Filters.regex('^Show Offers$'), pickup_offers),
                 MessageHandler(Filters.regex('^Show Needs$'), show_needs),
-                MessageHandler(Filters.regex('^Update on picked up needs$'), ask_for_needid),
+                MessageHandler(Filters.regex('^Update on Delivered Needs$'), ask_for_needid),
                 MessageHandler(Filters.regex('^Nothing$') | Filters.regex('^Done$'), done),
                 MessageHandler(Filters.regex('^Create Campaign$'), start_campaign),
             ],
