@@ -1,5 +1,4 @@
 import mysql.connector
-import Utils
 
 mydb = mysql.connector.connect(
     host="localhost",

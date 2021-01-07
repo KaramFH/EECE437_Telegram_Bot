@@ -42,7 +42,7 @@ def add_volunteer(userID, firstname, lastname, chatid):
 
 
 def get_type_id_from_type_name(typename):
-    query = "SELECT donationtypeid FROM donationtype WHERE donationtypename = " + str(typename)
+    query = "SELECT donationtypeid FROM donationtype WHERE donationtypename = '%s' " % (typename)
     cr.execute(query)
     a = cr.fetchall()
     return a[0][0]
@@ -61,16 +61,17 @@ def add_offer(typename, userID, description ,QtAmount):
     mydb.commit()
     print("done executing")
 
-def add_need(userID, donation_type_name, description, cashValue, quantityAmount):  # by default db sets active = 1
-    # A.Y on 3-1-2020 same as add_offer function above.
-    # typeID = donation_types.get(donation_type_name)
-    typeID = get_type_id_from_type_name(donation_type_name)
-    query_template = "INSERT into need (Donationtypeid, userID, description, cashValue, quantityAmount, quantityremaining) VALUES (" \
-            "{}, {}, '{}', {}, {}, {})"
-    query = query_template.format(typeID, userID, description, cashValue, quantityAmount, quantityAmount)
+def add_need(userID, typename, description, cashValue, quantityAmount):
+    typeID = get_type_id_from_type_name(typename)
+    print('lets see what we got...')
+    query = "INSERT into need (DonationTypeID, userID, cashValue, QuantityAmount, quantityremaining, description) " \
+            "VALUES " \
+            "(%d,%d, %d , %d,%d ,'%s' ) " % ( int(typeID) , int(userID), int(cashValue), int(quantityAmount), int(quantityAmount), description)
+    print(query)
     cr.execute(query)
     mydb.commit()
-    print("done adding request")
+    print("done executing")
+
 
 def is_registered(id, firstname) -> bool:
     query = "SELECT firstname from user where userid = " + str(id)
@@ -356,4 +357,4 @@ def is_pickedup(offerid) -> bool:
         return True
     return False
 
-print(get_type_id_from_type_name('Test2'))
+

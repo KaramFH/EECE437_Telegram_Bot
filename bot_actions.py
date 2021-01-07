@@ -369,8 +369,10 @@ def offer_registered( update: Update, context: CallbackContext)-> int:
 ###########################################################################################################################################################
 
 def request_type ( update: Update, context: CallbackContext)-> int:
-    request.append(u1.UserID)
-    request.append(u1.ChatID)
+    user = update.message.from_user
+    userid = user.id 
+    request.append(userid)
+    request.append(userid)
     #reply_keyboard = [['Cancel']]
     reply_keyboard = Utils.get_all_types_as_list_for_request()
     update.message.reply_text(
@@ -471,11 +473,11 @@ def request_noted(update: Update, context: CallbackContext)-> int:
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     )
     user_id = request[0] 
-    donation_type_id = request[2]
+    donation_type = request[2]
     request_description = request[3]
     cash_value = 0
-    quantity = request[4]
-    Utils.add_need(user_id, donation_type_id, request_description, cash_value, quantity)
+    quantity = int(request[4])
+    Utils.add_need(user_id, donation_type, request_description, cash_value, quantity)
     return GO_MENU
 
 ###########################################################################################################################################################
