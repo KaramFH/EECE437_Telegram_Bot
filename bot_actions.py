@@ -13,9 +13,6 @@ import telegram
 import logging
 import matcher
 
-#karam hasan was here
-
-#context.bot.send_message(chat_id=chat_id, text='Hi User, Add Fund to your account to start trading')
 
 ##############################################################################################################################################################################
 # Start command
@@ -43,7 +40,7 @@ ESTIMATING_NEW_NEED_VALUE, GO_MENU, CHOOSE_CONFIRM, RECEIVED_NEED, NOT_RECEIVED_
 
 def actions(update: Update, context: CallbackContext) -> int:
     reply_keyboard = [['Donate'],['Volunteer'],['Request'],
-                      ['Nothing'],['Show Offers'],['Update Pickup'],['Show Needs'],['Update on picked up needs'],['Create Campaign']]
+                      ['Nothing'],['Show Offers'],['Update Pickup'],['Show Needs'],['Update on Delivered Needs'],['Create Campaign']]
     update.message.reply_text(
         "Please choose what you want to do.",
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
@@ -156,7 +153,6 @@ def location(update: Update, context: CallbackContext) -> int:
         'Thank you! your information will now be saved in the database to help with your needs. Press Cancel to delete everything',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
-    #Utils.create_new_user(u1.UserID, u1.FirstName, u1.LastName, u1.Birthdate, u1.PhoneNumber, u1.ChatID)
     return CONCLUDE
 
 # Function that sends a reply to the user summarizing the information sent from the user
@@ -287,6 +283,7 @@ def donation_type(update: Update, context: CallbackContext) -> int:
     return OFFER_DESCRIPTION
 
 def donation_description(update: Update, context: CallbackContext)-> int:
+    reply_keyboard = [['Cancel']]
     type1 = update.message.text
     print(type1)
     offer.type = type1
@@ -294,21 +291,22 @@ def donation_description(update: Update, context: CallbackContext)-> int:
     # A.Y: 3-1-2020, Changed the logic
     if offer.type == 'other':
         update.message.reply_text(
-            'Please provide the name of the donation type',
+            'Please provide the name of the donation type and description',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
         return NEW_DONATION_TYPE
     else:
         update.message.reply_text(
             'Great! please provide a description of your donation',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
-    return OFFER_QUANTITY
+        return OFFER_QUANTITY
 
-#ERROR HERE K.H on 1/5/2021
 def new_donation_type(update: Update, context: CallbackContext)-> int:
     reply_keyboard=[['Cancel']]
     new_donation_name = update.message.text
     offer.type = new_donation_name
-    print("New offer type is: " + str(offer.type))
+    #print("New offer type is: " + str(offer.type))
     
     # This case happens when the user chooses 'other' and then enter a type that already rxists.
     # Example: medical. In this case, we should not create a new type in the database. 
@@ -340,7 +338,7 @@ def estimating_new_donation_value(update: Update, context: CallbackContext)-> in
     offer.cash_value = estimated_value
     Utils.create_new_donationtype(offer.type, estimated_value)
     update.message.reply_text(
-        'Thanks for choosing to donate a new item! Now provide a description for your donation.',
+        'Thanks for choosing to donate a new item! Now provide a quantity for your donation.',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
     return OFFER_QUANTITY
@@ -357,9 +355,7 @@ def donation_quantity(update: Update, context: CallbackContext)-> int:
     return OFFER_done   
 
 
-#ERROR HERE Karam Hasan on 1/5/2021: There is an error when running this function please A.Y check it out    
 def offer_registered( update: Update, context: CallbackContext)-> int: 
-    reply_keyboard=[['Cancel']]
     qt = update.message.text
     offer.QuantityAmount = qt
     Utils.add_offer(offer.type, offer.userID, offer.description, offer.QuantityAmount)
@@ -376,6 +372,7 @@ def offer_registered( update: Update, context: CallbackContext)-> int:
 def request_type ( update: Update, context: CallbackContext)-> int:
     request.append(u1.UserID)
     request.append(u1.ChatID)
+    #reply_keyboard = [['Cancel']]
     reply_keyboard = Utils.get_all_types_as_list_for_request()
     update.message.reply_text(
         'We will assist you if god wills, please choose what type of need you want to request...',
@@ -391,6 +388,8 @@ def request_description( update: Update, context: CallbackContext)-> int:
         'please provide us with a description of your need...',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
+    if request_type == 'other':
+        return NEW_REQUEST_TYPE
     return REQUEST_DESCRIPTION
 
 def new_request_type(update: Update, context: CallbackContext)-> int:
@@ -424,7 +423,7 @@ def estimating_new_need_value(update: Update, context: CallbackContext)-> int:
             'This value is invalid. Please type a number.',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
-        return ESTIMATING_NEW_DONATION_VALUE
+        return ESTIMATING_NEW_NEED_VALUE
     
     offer.cash_value = estimated_value
     Utils.create_new_donationtype(offer.type, estimated_value)
@@ -432,7 +431,7 @@ def estimating_new_need_value(update: Update, context: CallbackContext)-> int:
         'We know now the value of your need. Now provide a description for your donation.',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
-    return REQUEST_QUANTITY
+    return REQUEST_DESCRIPTION
 
 def request_quantity ( update: Update, context: CallbackContext)-> int:
     print(request)
@@ -446,7 +445,7 @@ def request_quantity ( update: Update, context: CallbackContext)-> int:
     return REQUEST_QUANTITY
 
 # this stage will be used to estimate cash amount needed for non-monetary needs, exp: medicine,laptops,books...
-#for now we will skip this stage
+
 
 ##################################~~~~~~~~~~~~~~~~~~~~~~~~~~#############################################################
 def ReqCash_estimate(update: Update, context: CallbackContext) -> int:
@@ -506,7 +505,7 @@ def added_volunteer(update: Update, context: CallbackContext) -> int :
     return GO_MENU
 
 ###########################################################################################################################################################
-# DELIVERING ITEMS A.Y
+# DELIVERING ITEMS (We will not use this.)
 ###########################################################################################################################################################
 
 def deliver(update: Update, context: CallbackContext) -> int:
