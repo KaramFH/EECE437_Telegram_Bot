@@ -14,6 +14,9 @@ from user import User
 from typing import Dict
 import _thread
 
+import os
+PORT = int(os.environ.get('PORT', 5000))
+
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
