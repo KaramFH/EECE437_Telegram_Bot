@@ -205,7 +205,8 @@ def show_assignedNeeds( userid):
     print(ids)
     fulltext = ""
     for ID in ids :
-        if( ID != 'None'):
+
+        if ( ( ID != 'None') and ( !Utils.is_delivered(ID )) ) :
             fulltext += text_for_need(ID)
 
     return fulltext
