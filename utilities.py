@@ -1,4 +1,5 @@
 import mysql.connector
+import Utils
 
 mydb = mysql.connector.connect(
     host="localhost",
@@ -189,7 +190,7 @@ def show_assignedOffers( userid):
     print(ids)
     fulltext = ""
     for ID in ids :
-        if( ID != 'None'):
+        if( ID != 'None') and ( not Utils.is_pickedup(ID )):
             fulltext += text_for_Offer(ID)
 
     return fulltext
@@ -206,7 +207,7 @@ def show_assignedNeeds( userid):
     fulltext = ""
     for ID in ids :
 
-        if ( ( ID != 'None') and ( !Utils.is_delivered(ID )) ) :
+        if ( ( ID != 'None') and ( not Utils.is_delivered(ID )) ) :
             fulltext += text_for_need(ID)
 
     return fulltext
@@ -332,3 +333,4 @@ def requested_needs(user_id): #returns the needs the user requested return list 
         list.append( (int(info[0]), info[1]) )
     return list
 
+#print(show_assignedNeeds(1470290214))

@@ -342,6 +342,15 @@ def is_delivered(needid) -> bool:
     query = "SELECT isActive from need  WHERE needID = " + str(needid)
     cr.execute(query)
     r = cr.fetchall()
-    if r[0][0]== 0 :
+    if int(r[0][0])== 0 :
         return True
     return False 
+
+def is_pickedup(offerid) -> bool:
+
+    query = "SELECT ispickedup from offering  WHERE offeringID = " + str(offerid)
+    cr.execute(query)
+    r = cr.fetchall()
+    if int(r[0][0])== 0 :
+        return True
+    return False

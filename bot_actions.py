@@ -629,7 +629,6 @@ def choose_offer(update: Update, context: CallbackContext) -> int:
     return SAVE_OFFER
 
 def save_offer(update: Update, context: CallbackContext) -> int:  
-    reply_keyboard=[['Cancel']] 
     user = update.message.from_user
     user_id = user.id
     text = update.message.text
@@ -666,11 +665,11 @@ def save_offer(update: Update, context: CallbackContext) -> int:
 ###########################################################################################################################################################
 
 def ask_for_offerid(update: Update, context: CallbackContext) -> int:
-    reply_keyboard=[['Cancel']]
     user = update.message.from_user
     user_id = user.id
 
     if not Utils.user_is_volunteer(user_id):
+        reply_keyboard = [['Menu'],['Exit']]
         update.message.reply_text(
              "You are not registered as a volunteer.",
              reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
@@ -679,16 +678,25 @@ def ask_for_offerid(update: Update, context: CallbackContext) -> int:
     else:
         a = utilities.show_assignedOffers( user_id)
 
-        update.message.reply_text(
-                "If you have picked up an offer, please provide me with it\'s offer ID"
-            )
-        update.message.reply_text(
-                "These are your assigned offers: "
-            )
-        update.message.reply_text(
-                a
-            )
-        return ASK_OFFER_ID
+        if len(a) > 0:
+            reply_keyboard=[['Cancel']]
+            update.message.reply_text(
+                    "If you have picked up an offer, please provide me with it\'s offer ID"
+                )
+            update.message.reply_text(
+                    "These are your assigned offers: "
+                )
+            update.message.reply_text(
+                    a,
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+                )
+            return ASK_OFFER_ID
+        else:
+            update.message.reply_text(
+                    "You do not have an assigned offer."
+                )
+            return ConversationHandler.END
+
 
 def update_pickup(update: Update, context: CallbackContext) -> int:
     reply_keyboard=[['Cancel']]
@@ -711,17 +719,17 @@ def update_pickup(update: Update, context: CallbackContext) -> int:
 ###########################################################################################################################################################
 
 def show_needs(update: Update, context: CallbackContext) -> int:
-    reply_keyboard1=[['Cancel']]
+    #reply_keyboard1=[['Cancel']]
     a = utilities.get_UndeliveredNeeds()
     user = update.message.from_user
     user_id = user.id
     if not Utils.user_is_volunteer(user_id):
         update.message.reply_text(
-            "These are the needs posted:",
-            reply_markup=ReplyKeyboardMarkup(reply_keyboard1, one_time_keyboard=True),
+            "These are the needs posted:"
         )
         update.message.reply_text(
             a
+
         )
         return ConversationHandler.END
 
@@ -788,11 +796,11 @@ def update_need(update: Update, context: CallbackContext) -> int:
 ###########################################################################################################################################################
 
 def ask_for_needid(update: Update, context: CallbackContext) -> int:
-    reply_keyboard=[['Cancel']]
     user = update.message.from_user
     user_id = user.id
 
     if not Utils.user_is_volunteer(user_id):
+        reply_keyboard = [['Menu'],['Exit']]
         update.message.reply_text(
              "You are not registered as a volunteer.",
              reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
@@ -801,17 +809,26 @@ def ask_for_needid(update: Update, context: CallbackContext) -> int:
 
     else:
         a = utilities.show_assignedNeeds(user_id)
-
-        update.message.reply_text(
-                "If you have delivered a need, please provide me with it\'s need ID"
-            )
-        update.message.reply_text(
-                "These are your assigned needs to deliver: "
-            )
-        update.message.reply_text(
-                a
-            )
-        return ASK_NEED_ID
+        if len(a) > 0:
+            reply_keyboard=[['Cancel']]
+            update.message.reply_text(
+                    "If you have delivered a need, please provide me with it\'s need ID"
+                )
+            update.message.reply_text(
+                    "These are your assigned needs to deliver: "
+                )
+            update.message.reply_text(
+                    a,
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+                )
+            return ASK_NEED_ID
+        else:
+            reply_keyboard = [['Menu'],['Exit']]
+            update.message.reply_text(
+                    "You have no assigned needs to deilver.",
+                    reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+                )
+            return GO_MENU
 
 def update_need_pickedup(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
@@ -858,7 +875,7 @@ def confirm_delivery(update: Update, context: CallbackContext) -> int:
         return ConversationHandler.END
     else:
         reply_keyboard = [['I received the delivery'],
-                      ['I haven\'t received the deilvery']]
+                      ['I haven\'t received the deilvery'],['Cancel']]
 
         update.message.reply_text(
             "Please choose wether you received your need or not.",
@@ -869,6 +886,8 @@ def confirm_delivery(update: Update, context: CallbackContext) -> int:
 def delivery_received(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     user_id = user.id
+
+    reply_keyboard = [['Cancel']]
 
     a = utilities.requested_needs(user_id)
 
@@ -883,7 +902,8 @@ def delivery_received(update: Update, context: CallbackContext) -> int:
         )
 
     update.message.reply_text(
-            "Please provide me with the need ID you have received"
+            "Please provide me with the need ID you have received",
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
 
     return RECEIVED_NEED
@@ -906,6 +926,8 @@ def delivery_not_received(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     user_id = user.id
 
+    reply_keyboard = [['Cancel']]
+
     a = utilities.requested_needs(user_id)
 
     update.message.reply_text(
@@ -919,7 +941,8 @@ def delivery_not_received(update: Update, context: CallbackContext) -> int:
         )
 
     update.message.reply_text(
-            "Please provide me with the need ID of the need you have not received."
+            "Please provide me with the need ID of the need you have not received.",
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
 
     return NOT_RECEIVED_NEED
