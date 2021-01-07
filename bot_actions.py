@@ -432,7 +432,7 @@ def estimating_new_need_value(update: Update, context: CallbackContext)-> int:
     offer.cash_value = estimated_value
     Utils.create_new_donationtype(offer.type, estimated_value)
     update.message.reply_text(
-        'We know now the value of your need. Now provide a description for your donation.',
+        'We know now the value of your need. Now provide a description for your need.',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
     return REQUEST_DESCRIPTION

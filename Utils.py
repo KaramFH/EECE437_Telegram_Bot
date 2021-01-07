@@ -42,9 +42,10 @@ def add_volunteer(userID, firstname, lastname, chatid):
 
 
 def get_type_id_from_type_name(typename):
-    query = "SELECT donationtypeid FROM donationtype WHERE donationtypename = '{}' "
-    cr.execute(query.format(typename))
-    return cr.fetchall()[0][0]
+    query = "SELECT donationtypeid FROM donationtype WHERE donationtypename = " + str(typename)
+    cr.execute(query)
+    a = cr.fetchall()
+    return a[0][0]
 
 def add_offer(typename, userID, description ,QtAmount):
     # A.Y: I deleted the below line because we no longer need the donation_types
@@ -354,3 +355,5 @@ def is_pickedup(offerid) -> bool:
     if int(r[0][0])== 0 :
         return True
     return False
+
+print(get_type_id_from_type_name('Test2'))
