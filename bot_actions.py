@@ -338,7 +338,7 @@ def estimating_new_donation_value(update: Update, context: CallbackContext)-> in
     offer.cash_value = estimated_value
     Utils.create_new_donationtype(offer.type, estimated_value)
     update.message.reply_text(
-        'Thanks for choosing to donate a new item! Now provide a quantity for your donation.',
+        'Thanks for choosing to donate a new item! Now provide a description for your donation.',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
     return OFFER_QUANTITY
@@ -383,12 +383,17 @@ def request_description( update: Update, context: CallbackContext)-> int:
     reply_keyboard=[['Cancel']]
     request_type = update.message.text
     request.append(request_type)
+    
+    if request_type == 'other':
+        update.message.reply_text(
+            'please provide us with a name for your need...',
+            reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+        )
+        return NEW_REQUEST_TYPE
     update.message.reply_text(
         'please provide us with a description of your need...',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
-    if request_type == 'other':
-        return NEW_REQUEST_TYPE
     return REQUEST_DESCRIPTION
 
 def new_request_type(update: Update, context: CallbackContext)-> int:
