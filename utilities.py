@@ -239,7 +239,7 @@ def get_UndeliveredNeeds():
         needID = need[0]
         need_info = get_need_full_info(needID)
         Need_as_text = "" \
-        "  ** MATCHED NEED  : " + "\n" \
+        "  ** NEED  : " + "\n" \
         "        Need ID =  " + str(needID) + "\n" \
         "        Quantity Amount: " + str(need_info[0]) + "\n" \
         "        Description: " + need_info[1] + "\n" \
