@@ -190,7 +190,7 @@ def show_assignedOffers( userid):
     print(ids)
     fulltext = ""
     for ID in ids :
-        if( ID != 'None') and ( not Utils.is_pickedup(ID )):
+        if (( ID != 'None') and ( not Utils.is_pickedup(ID ))):
             fulltext += text_for_Offer(ID)
 
     return fulltext

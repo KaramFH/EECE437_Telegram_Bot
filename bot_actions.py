@@ -360,8 +360,7 @@ def offer_registered( update: Update, context: CallbackContext)-> int:
     offer.QuantityAmount = qt
     Utils.add_offer(offer.type, offer.userID, offer.description, offer.QuantityAmount)
     update.message.reply_text(
-        'Hope is never lost with a community such as yours. Thank you for your offer.',
-        reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+        'Hope is never lost with a community such as yours. Thank you for your offer.'
     )
     return ConversationHandler.END
 
@@ -593,14 +592,13 @@ def mark_delivery_as_failure(update: Update, context: CallbackContext) -> int:
 ###########################################################################################################################################################
 
 def pickup_offers(update: Update, context: CallbackContext) -> int:
-    reply_keyboard1=[['Cancel']]
+    #reply_keyboard1=[['Cancel']]
     a = utilities.get_UnpickedUpOffers()
     user = update.message.from_user
     user_id = user.id
     if not Utils.user_is_volunteer(user_id):
         update.message.reply_text(
-            "These are the offers that are available:",
-            reply_markup=ReplyKeyboardMarkup(reply_keyboard1, one_time_keyboard=True),
+            "These are the offers that are available:"
          )
         update.message.reply_text(
             a
@@ -651,8 +649,7 @@ def save_offer(update: Update, context: CallbackContext) -> int:
     donor_details= utilities.details_of_user(chatid)
     update.message.reply_text(
              "Thankyou! The Donor of the offer have been informed. You should also contact the donor to take the offer from him."'\n'
-             "These are the donor\'s details: "'\n',
-             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+             "These are the donor\'s details: "'\n'
          )
     update.message.reply_text(
              donor_details
@@ -699,7 +696,6 @@ def ask_for_offerid(update: Update, context: CallbackContext) -> int:
 
 
 def update_pickup(update: Update, context: CallbackContext) -> int:
-    reply_keyboard=[['Cancel']]
     user = update.message.from_user
     user_id = user.id
     text = update.message.text
@@ -709,8 +705,7 @@ def update_pickup(update: Update, context: CallbackContext) -> int:
     utilities.set_offer_pickedup(offerid, user_id)
 
     update.message.reply_text(
-             "Thank you! We are now up-to-date with you.",
-             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+             "Thank you! We are now up-to-date with you."
          )
     return ConversationHandler.END
 
