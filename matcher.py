@@ -12,8 +12,9 @@ cr = mydb.cursor()
 
 
 def run_matcher():
-    typeID = 2
-    if (0 == 0):
+    
+    types =[1,2,3,4,5,6]    # should have a fct. to get all type ids actively
+    for  typeID in types  :
 
         for need in utils.fetch_all_needs_of_type(typeID):
 
