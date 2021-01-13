@@ -94,7 +94,7 @@ def text_for_need(needID):
 
     offer_info = get_need_full_info(needID)
     Need_as_text = "" \
-        "  ***  NEED : " + "\n" \
+        "  *** PENDING NEED : " + "\n" \
         "        Need ID =  " + str(needID) + "\n" \
         "        Need Type =  " + str(need_info[4]) + "\n"   \
         "        Quantity Amount: " + str(offer_info[0]) + "\n" \
@@ -249,13 +249,9 @@ def get_UndeliveredNeeds():
     print(needs)
     for need in needs :
         needID = need[0]
-        need_info = get_need_full_info(needID)
-        Need_as_text = "" \
-        "  ** NEED  : " + "\n" \
-        "        Need ID =  " + str(needID) + "\n" \
-        "        Quantity Amount: " + str(need_info[0]) + "\n" \
-        "        Description: " + need_info[1] + "\n" \
-        "--------------------------------------------------------"+ "\n\n"
+        # need_info = get_need_full_info(needID)
+        Need_as_text = text_for_need(needID)
+        
         
         text += Need_as_text
 
