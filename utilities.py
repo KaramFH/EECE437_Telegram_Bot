@@ -1,4 +1,5 @@
 import mysql.connector
+from Utils import *
 
 mydb = mysql.connector.connect(
     host="localhost",
@@ -14,6 +15,16 @@ def get_type_name(id):
     a = cr.fetchall()
     return a[0][0]
 
+def is_pickedup(offerid) -> bool:
+
+    query = "SELECT ispickedup from offering  WHERE offeringID = " + str(offerid)
+    cr.execute(query)
+    r = cr.fetchall()
+    if int(r[0][0])== 0 :
+        return True
+    return False
+
+
 def get_offer_full_info(offer_id):
 
 
@@ -23,7 +34,7 @@ def get_offer_full_info(offer_id):
 
     user_offering_id = offer[0]
     quantityamount = offer[1]
-    description = offer[2]
+    description = offer[2] 
     typename = get_type_name(offer[3])
 
     user_offering_location_query = "SELECT addresslatitude, addresslongitude FROM user WHERE userid = " + str(user_offering_id)
@@ -201,7 +212,7 @@ def show_assignedOffers( userid):
     print(ids)
     fulltext = ""
     for ID in ids :
-        if (( ID != 'None') and ( not Utils.is_pickedup(ID ))):
+        if (( ID != 'None') and ( not is_pickedup(ID))):
             fulltext += text_for_Offer(ID)
 
     return fulltext
