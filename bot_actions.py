@@ -511,7 +511,7 @@ def added_volunteer(update: Update, context: CallbackContext) -> int :
     return GO_MENU
 
 ###########################################################################################################################################################
-# DELIVERING ITEMS (We will not use this.)
+# DELIVERING ITEMS (We will not use this.) A.Y
 ###########################################################################################################################################################
 
 def deliver(update: Update, context: CallbackContext) -> int:
