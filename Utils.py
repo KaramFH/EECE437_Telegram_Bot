@@ -339,14 +339,7 @@ def find_nearby_users(lat,lon):
             nearby_available_users.append(x[0])
     return nearby_available_users
 
-def is_delivered(needid) -> bool:
 
-    query = "SELECT isActive from need  WHERE needID = " + str(needid)
-    cr.execute(query)
-    r = cr.fetchall()
-    if int(r[0][0])== 0 :
-        return True
-    return False 
 
 def is_pickedup(offerid) -> bool:
 

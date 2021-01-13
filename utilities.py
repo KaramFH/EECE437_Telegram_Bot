@@ -25,6 +25,15 @@ def is_pickedup(offerid) -> bool:
         return True
     return False
 
+def is_delivered(needid) -> bool:
+
+    query = "SELECT isActive from need  WHERE needID = " + str(needid)
+    cr.execute(query)
+    r = cr.fetchall()
+    if int(r[0][0])== 0 :
+        return True
+    return False 
+
 
 def get_offer_full_info(offer_id):
 
@@ -84,6 +93,7 @@ def get_MatchedNeeeds( offerid) :                  # get needs matched with this
     cr.execute(offering_query)
     needs = cr.fetchall()
     text = ""
+    print("getting matched needs...")
     print(needs)
     for need in needs :
         needID = need[0]
@@ -181,6 +191,7 @@ def update_offer_assigned(offerID, userID) :
     query3 = "UPDATE volunteer SET offer_pickup_id = '{}', state = 3 WHERE userID = " + str(userID)
     cr.execute(query3.format(updated))
     mydb.commit()
+    print("offers assigned updated for volunteer...")
 
 def cancel_offer_assigned(offerID,userid) :
 
@@ -218,7 +229,7 @@ def show_assignedOffers( userid):
         if (( ID != 'None') and ( not is_pickedup(ID))):
             fulltext += text_for_Offer(ID)
 
-    print("fulltext :" ,fulltext)
+    print(" showing assigned offers, fulltext :" ,fulltext)
     return fulltext
     
 
@@ -227,13 +238,13 @@ def show_assignedNeeds( userid):
     query = "SELECT NeedTodeliver_id from volunteer WHERE userid =  " + str(userid)
     cr.execute(query)
     IDs = cr.fetchall()
-    print(IDs)
+    print("getting assigned needs...")
     ids = IDs[0][0].split(",")
-    print(ids)
+    # print(ids)
     fulltext = ""
     for ID in ids :
 
-        if ( ( ID != 'None') and ( not Utils.is_delivered(ID )) ) :
+        if ( ( ID != 'None') and ( not is_delivered(ID )) ) :
             fulltext += text_for_need(ID)
 
     return fulltext
@@ -243,7 +254,8 @@ def set_offer_pickedup(offerid, volunteerID):
     query = "UPDATE offering SET isPickedUp = 1 WHERE offeringID = " + str(offerid)
     cr.execute(query)
     mydb.commit()
-
+    print("offer set picked up... :)")
+    
     query2 = "SELECT PickedUp_offersID from volunteer WHERE userid =  " + str(volunteerID)
     cr.execute(query2)
     offerIDs = cr.fetchall()[0][0]
@@ -277,7 +289,7 @@ def update_need_assigned(needID, userID):
     query = "UPDATE need SET Assigned = 1 WHERE needID = " + str(needID)
     cr.execute(query)
     mydb.commit()
-
+    print(" updating need assigned...")
     query2 = "SELECT NeedTodeliver_id from volunteer WHERE userid =  " + str(userID)
     cr.execute(query2)
     needIDs = cr.fetchall()[0][0]
@@ -289,7 +301,7 @@ def update_need_assigned(needID, userID):
     query = "UPDATE volunteer SET NeedTodeliver_id = '{}', state = 4 WHERE userID = " + str(userID)
     cr.execute(query.format(needIDs))
     mydb.commit()
-
+    print(" need assigned succesfully...")
 
 
 
@@ -308,7 +320,7 @@ def set_need_delivered(needid, volunteerID):
     query3 = "UPDATE volunteer SET DeliveredNeeds_id = '{}' WHERE userID = " + str(volunteerID)
     cr.execute(query3.format(needIDs))
     mydb.commit()
-
+    print("need set as delivered !!")
 
 def cancel_delivery_assigned(needID,userid) :
 
@@ -324,7 +336,7 @@ def cancel_delivery_assigned(needID,userid) :
     query3 = "UPDATE volunteer SET NeedTodeliver_id = '{}' WHERE userID = " + str(userid)
     cr.execute(query3.format(updated))
     mydb.commit()
-
+    print("assigned delivery canceled :(")
 
 
 def DeliveredNeeds_receivers() :        # return list of tuples = [ (chatID , 'Need description), (ChatID , 'Need description')]
