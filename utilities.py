@@ -92,15 +92,15 @@ def get_MatchedNeeeds( offerid) :                  # get needs matched with this
 
 def text_for_need(needID):        
 
-    offer_info = get_need_full_info(needID)
+    need_info = get_need_full_info(needID)
     Need_as_text = "" \
         "  *** PENDING NEED : " + "\n" \
         "        Need ID =  " + str(needID) + "\n" \
         "        Need Type =  " + str(need_info[4]) + "\n"   \
-        "        Quantity Amount: " + str(offer_info[0]) + "\n" \
-        "        Description: " + str(offer_info[1]) + "\n" \
-        "        Latitude: " + str(offer_info[2]) + "\n" \
-        "        Longitude: " + str(offer_info[3] ) + "\n" \
+        "        Quantity Amount: " + str(need_info[0]) + "\n" \
+        "        Description: " + str(need_info[1]) + "\n" \
+        "        Latitude: " + str(need_info[2]) + "\n" \
+        "        Longitude: " + str(need_info[3] ) + "\n" \
         "---------------------------------------------------------------"
     
     # if Offer_isMatched(needID):
