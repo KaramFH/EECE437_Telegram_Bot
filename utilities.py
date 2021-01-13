@@ -20,7 +20,8 @@ def is_pickedup(offerid) -> bool:
     query = "SELECT ispickedup from offering  WHERE offeringID = " + str(offerid)
     cr.execute(query)
     r = cr.fetchall()
-    if int(r[0][0])== 0 :
+    x= r[0][0]
+    if int(x)== 1 :
         return True
     return False
 
@@ -161,7 +162,7 @@ def details_of_user(userid):
     query = "SELECT * from user WHERE userid =" + str(userid)
     cr.execute(query)
     details = cr.fetchall()
-    text = "First name: "+details[0][1]+'\n'+"Last name: "+details[0][2]+'\n'+"Phonenumber: "+details[0][4]+'\n'+"Address: "+details[0][7]
+    text = "First name: "+str(details[0][1])+'\n'+"Last name: "+str(details[0][2])+'\n'+"Phonenumber: "+str(details[0][4])+'\n'+"Address: "+str(details[0][7])
     return text
 
 
@@ -207,14 +208,17 @@ def show_assignedOffers( userid):
     query = "SELECT offer_pickup_id from volunteer WHERE userid =  " + str(userid)
     cr.execute(query)
     IDs = cr.fetchall()
-    print(IDs)
+    # print(IDs)
     ids = IDs[0][0].split(",")
-    print(ids)
+    # print(ids)
     fulltext = ""
     for ID in ids :
+        x = not is_pickedup(ID)
+        # print(x)
         if (( ID != 'None') and ( not is_pickedup(ID))):
             fulltext += text_for_Offer(ID)
 
+    print("fulltext :" ,fulltext)
     return fulltext
     
 

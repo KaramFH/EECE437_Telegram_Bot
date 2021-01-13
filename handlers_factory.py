@@ -70,7 +70,7 @@ def create_start_handler():
                 MessageHandler(Filters.regex('^Request$'), request_type),
                 MessageHandler(Filters.regex('^Volunteer$') | Filters.regex('^Register as Volunteer$'), new_volunteer),
                 MessageHandler(Filters.regex('^deliver$') | Filters.regex('^Deliver$'), deliver) ,
-                MessageHandler(Filters.regex('^Update Pickup$'), ask_for_offerid ),
+                MessageHandler(Filters.regex('^Updates on pickups$'), ask_for_offerid ),
                 MessageHandler(Filters.regex('^Show Offers$'), pickup_offers),
                 MessageHandler(Filters.regex('^Show Needs$'), show_needs),
                 MessageHandler(Filters.regex('^Update on Delivered Needs$'), ask_for_needid),
