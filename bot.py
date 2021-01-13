@@ -60,6 +60,13 @@ def main() -> None:
 
     # Start the Bot
     updater.start_polling()
+    
+    # Use this webhook instead of updater.start_polling() inorder to deploy the bot on a Heroku server.
+    
+#     updater.start_webhook(listen="0.0.0.0",
+#                            port=int(PORT),
+#                            url_path=TOKEN)
+#     updater.bot.setWebhook('https://yourherokuappname.herokuapp.com/' + TOKEN)
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
