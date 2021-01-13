@@ -8,6 +8,12 @@ mydb = mysql.connector.connect(
 )
 cr = mydb.cursor()
 
+def get_type_name(id):
+    query = "SELECT DonationtypeName FROM donationtype WHERE  DonationTypeID =  " + str(id)
+    cr.execute(query)
+    a = cr.fetchall()
+    return a[0][0]
+
 def get_offer_full_info(offer_id):
 
 
@@ -18,7 +24,7 @@ def get_offer_full_info(offer_id):
     user_offering_id = offer[0]
     quantityamount = offer[1]
     description = offer[2]
-    typename = Utils.get_type_name(offer[3])
+    typename = get_type_name(offer[3])
 
     user_offering_location_query = "SELECT addresslatitude, addresslongitude FROM user WHERE userid = " + str(user_offering_id)
     cr.execute(user_offering_location_query)
@@ -39,7 +45,7 @@ def get_need_full_info(need_id):
     user_need_id = need[0]
     quantityamount = need[1]
     description = need[2]
-    typename = Utils.get_type_name(need[3])
+    typename = get_type_name(need[3])
     
     user_need_location_query = "SELECT addresslatitude, addresslongitude FROM user WHERE userid = " + str(user_need_id)
     cr.execute(user_need_location_query)
