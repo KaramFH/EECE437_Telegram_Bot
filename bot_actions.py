@@ -318,7 +318,7 @@ def new_donation_type(update: Update, context: CallbackContext)-> int:
         return OFFER_QUANTITY
     else:
         update.message.reply_text(
-            'Thanks for donating a new type! Can you first estimate the value of this object in thousnds LBP ?',
+            'Thanks for donating a new type! Can you first estimate the cash value of this object in thousands LBP ?',
             reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
         )
         return ESTIMATING_NEW_DONATION_VALUE
@@ -349,7 +349,7 @@ def donation_quantity(update: Update, context: CallbackContext)-> int:
     print(desc)
     reply_keyboard = [['1', '5', '15', '20', '50','Cancel']]
     update.message.reply_text(
-        'Thanks, can you specify the quantity/amount you will be providing in integers, ex: 5 (unit)',
+        'Thanks, can you specify the quantity/amount(thousands LBP) you will be providing in integers, ex: 5 (unit)',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     )
     return OFFER_done   
