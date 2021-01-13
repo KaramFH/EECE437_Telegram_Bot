@@ -11,13 +11,14 @@ cr = mydb.cursor()
 def get_offer_full_info(offer_id):
 
 
-    offering_query = "SELECT userid, quantityamount, description FROM offering WHERE offeringid = " + str(offer_id)
+    offering_query = "SELECT userid, quantityamount, description , DonationTypeID FROM offering WHERE offeringid = " + str(offer_id)
     cr.execute(offering_query)
     offer = cr.fetchall()[0]
 
     user_offering_id = offer[0]
     quantityamount = offer[1]
     description = offer[2]
+    typename = Utils.get_type_name(offer[3])
 
     user_offering_location_query = "SELECT addresslatitude, addresslongitude FROM user WHERE userid = " + str(user_offering_id)
     cr.execute(user_offering_location_query)
@@ -25,19 +26,20 @@ def get_offer_full_info(offer_id):
 
     user_offering_lati = user_offering_location[0]
     user_offering_long = user_offering_location[1]
-    offer_full_info = [quantityamount, description, user_offering_lati, user_offering_long]
+    offer_full_info = [quantityamount, description, user_offering_lati, user_offering_long, typename]
     print(offer_full_info)
     return offer_full_info
 
 
 def get_need_full_info(need_id):
-    need_query = "SELECT userid, quantityamount, description FROM need WHERE needid = " + str(need_id)
+    need_query = "SELECT userid, quantityamount, description , DonationTypeID FROM need WHERE needid = " + str(need_id)
     cr.execute(need_query)
     need = cr.fetchall()[0]
 
     user_need_id = need[0]
     quantityamount = need[1]
     description = need[2]
+    typename = Utils.get_type_name(need[3])
     
     user_need_location_query = "SELECT addresslatitude, addresslongitude FROM user WHERE userid = " + str(user_need_id)
     cr.execute(user_need_location_query)
@@ -45,7 +47,7 @@ def get_need_full_info(need_id):
 
     user_need_lati = user_need_location[0]
     user_need_long = user_need_location[1]
-    need_full_info = [quantityamount, description, user_need_lati, user_need_long]
+    need_full_info = [quantityamount, description, user_need_lati, user_need_long , typename]
     return need_full_info
 
 def Offer_isMatched( offerid ) -> bool:                 # check if there are any needs matched with this offer
@@ -71,6 +73,7 @@ def get_MatchedNeeeds( offerid) :                  # get needs matched with this
         Need_as_text = "" \
         "  ** MATCHED NEED  : " + "\n" \
         "        Need ID =  " + str(needID) + "\n" \
+        "        Need Type =  " + str(need_info[4]) + "\n"   \
         "        Quantity Amount: " + str(need_info[0]) + "\n" \
         "        Description: " + need_info[1] + "\n" \
         "        Latitude: " + str(need_info[2] ) + "\n" \
@@ -81,31 +84,13 @@ def get_MatchedNeeeds( offerid) :                  # get needs matched with this
 
     return text
 
-
-def text_for_Offer( offerID):        # gets offers UNpickied up with matched needs
-
-    offer_info = get_offer_full_info(offerID)
-    Offer_as_text = "" \
-        "  *** Offering: " + "\n" \
-        "        OFFER ID =  " + str(offerID) + "\n" \
-        "        Quantity Amount: " + str(offer_info[0]) + "\n" \
-        "        Description: " + str(offer_info[1]) + "\n" \
-        "        Latitude: " + str(offer_info[2]) + "\n" \
-        "        Longitude: " + str(offer_info[3] )+ "\n" \
-
-    if Offer_isMatched(offerID):
-        matchedNeeds = get_MatchedNeeeds(offerID)
-        Offer_as_text +=  matchedNeeds
-
-    return Offer_as_text
-
-
 def text_for_need(needID):        
 
     offer_info = get_need_full_info(needID)
     Need_as_text = "" \
         "  ***  NEED : " + "\n" \
         "        Need ID =  " + str(needID) + "\n" \
+        "        Need Type =  " + str(need_info[4]) + "\n"   \
         "        Quantity Amount: " + str(offer_info[0]) + "\n" \
         "        Description: " + str(offer_info[1]) + "\n" \
         "        Latitude: " + str(offer_info[2]) + "\n" \
@@ -118,6 +103,27 @@ def text_for_need(needID):
 
 
     return Need_as_text
+
+
+def text_for_Offer( offerID):        # gets offers UNpickied up with matched needs
+
+    offer_info = get_offer_full_info(offerID)
+    Offer_as_text = "" \
+        "  *** OFFERING ***    : " + "\n" \
+        "        OFFER ID =  " + str(offerID) + "\n" \
+        "        Offer Type =  " + str(offer_info[4]) + "\n" \
+        "        Quantity Amount: " + str(offer_info[0]) + "\n" \
+        "        Description: " + str(offer_info[1]) + "\n" \
+        "        Latitude: " + str(offer_info[2]) + "\n" \
+        "        Longitude: " + str(offer_info[3] )+ "\n" \
+
+
+    if Offer_isMatched(offerID):
+        matchedNeeds = get_MatchedNeeeds(offerID)
+        Offer_as_text +=  matchedNeeds
+    Offer_as_text += "*****************************************" + "\n"
+
+    return Offer_as_text
 
 
 def get_UnpickedUpOffers() :                      # Get offers unpicked up  and unassigned for vilunteers to see
