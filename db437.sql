@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.4
+-- version 5.0.3
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 13, 2021 at 02:57 PM
--- Server version: 10.4.17-MariaDB
--- PHP Version: 8.0.0
+-- Generation Time: Jan 14, 2021 at 05:26 PM
+-- Server version: 10.4.14-MariaDB
+-- PHP Version: 7.2.34
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -100,12 +100,13 @@ CREATE TABLE `need` (
   `DonationTypeID` int(11) DEFAULT NULL,
   `UserID` int(11) DEFAULT NULL,
   `Date` varchar(45) DEFAULT NULL,
-  `isActive` tinyint(4) DEFAULT 1,
   `CashValue` int(11) DEFAULT NULL,
   `QuantityAmount` int(11) DEFAULT NULL,
   `QuantityRemaining` int(11) DEFAULT NULL,
   `Description` varchar(45) DEFAULT NULL,
+  `Matched` int(11) DEFAULT 0,
   `Assigned` int(11) DEFAULT 0,
+  `isActive` tinyint(4) DEFAULT 1,
   `confirmed` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -113,18 +114,18 @@ CREATE TABLE `need` (
 -- Dumping data for table `need`
 --
 
-INSERT INTO `need` (`NeedID`, `DonationTypeID`, `UserID`, `Date`, `isActive`, `CashValue`, `QuantityAmount`, `QuantityRemaining`, `Description`, `Assigned`, `confirmed`) VALUES
-(1, 2, 1448273288, NULL, 0, 100, 10, 10, 'Aub is a tyrant and i need to sleep plz', 1, 0),
-(2, 3, 1470290214, NULL, 1, 0, 1, 1, 'I need a daffeye', 1, 0),
-(5, 1, 1470290214, NULL, 1, 0, 1, 1, '1000', 1, 0),
-(6, 1, 1470290214, NULL, 1, 0, 100, 100, '1000000$', 0, 0),
-(7, 2, 1470290214, NULL, 0, 0, 1, 1, 'Profinal', 1, 1),
-(8, 3, 1470290214, NULL, 1, 0, 1, 1, 'Coach', 0, 0),
-(9, 3, 1470290214, NULL, 1, 0, 1, 1, 'Coach', 0, 0),
-(10, 10, 1470290214, NULL, 1, 0, 1, 1, '&&', 0, 0),
-(11, 11, 1470290214, NULL, 1, 44848, 5, 5, 'nnfwobfowebf', 0, 0),
-(12, 14, 1470290214, NULL, 1, 0, 1, 1, 'Big mattress', 1, 0),
-(13, 6, 1448273288, NULL, 1, 0, 250, 250, 'I need a phone for my daughter to go to unive', 0, 0);
+INSERT INTO `need` (`NeedID`, `DonationTypeID`, `UserID`, `Date`, `CashValue`, `QuantityAmount`, `QuantityRemaining`, `Description`, `Matched`, `Assigned`, `isActive`, `confirmed`) VALUES
+(1, 2, 1448273288, NULL, 100, 10, 10, 'Aub is a tyrant and i need to sleep plz', 0, 1, 0, 0),
+(2, 3, 1470290214, NULL, 0, 1, 1, 'I need a daffeye', 0, 1, 1, 0),
+(5, 1, 1470290214, NULL, 0, 1, 1, '1000', 0, 1, 1, 0),
+(6, 1, 1470290214, NULL, 0, 100, 100, '1000000$', 0, 0, 1, 0),
+(7, 2, 1470290214, NULL, 0, 1, 1, 'Profinal', 0, 1, 0, 1),
+(8, 3, 1470290214, NULL, 0, 1, 1, 'Coach', 0, 0, 1, 0),
+(9, 3, 1470290214, NULL, 0, 1, 1, 'Coach', 0, 0, 1, 0),
+(10, 10, 1470290214, NULL, 0, 1, 1, '&&', 0, 0, 1, 0),
+(11, 11, 1470290214, NULL, 44848, 5, 5, 'nnfwobfowebf', 0, 0, 1, 0),
+(12, 14, 1470290214, NULL, 0, 1, 1, 'Big mattress', 0, 1, 1, 0),
+(13, 6, 1448273288, NULL, 0, 250, 250, 'I need a phone for my daughter to go to unive', 0, 0, 1, 0);
 
 -- --------------------------------------------------------
 

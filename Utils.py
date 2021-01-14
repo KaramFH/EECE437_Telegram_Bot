@@ -177,7 +177,7 @@ def fetch_all_needs_of_type(typeID) :
 
     query = "SELECT NeedID, userID, DonationtypeID, CashValue, QuantityRemaining FROM need " \
             "WHERE " \
-            "donationtypeid = {} ORDER " \
+            "donationtypeid = {} AND isActive = 0 AND Matched = 0 ORDER " \
             "BY QuantityRemaining " \
             "DESC "
     cr.execute(query.format(typeID))
