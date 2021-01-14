@@ -11,7 +11,3 @@ class Admin(Person) :
         db_utilities.create_new_admin(name, address)
 
 
-elhosn = Admin( "abess 4" , "bir hassan" , "79100605")
-elhosn.add_user( "sh71" , "bir hassan" , "79100605")
-elhosn.add_user( "sh72" , "bir hassan" , "79100605")
-elhosn.add_user( "sh73" , "bir hassan" , "79100605")
