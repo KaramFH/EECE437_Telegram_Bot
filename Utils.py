@@ -32,7 +32,7 @@ def get_phonenumber(userid):
 
 
 def add_volunteer(userID, firstname, lastname, chatid):
-    state = VolunteerState.FREE.value           # use enum for volunteer state
+    state = states.FREE.value           # use enum for volunteer state
     query_template = "INSERT into volunteer (userID, chatid, firstname, Lastname, state) VALUES (%d, %d, '%s', '%s', %d )"
     query = query_template % (int(userID), int(chatid), firstname, lastname, state)
     print(query)
