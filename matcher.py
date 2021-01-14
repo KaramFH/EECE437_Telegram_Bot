@@ -89,7 +89,7 @@ def update_qtoffered ( offerid, needid , qtremaining) :
     query = "UPDATE offering SET  QuantityRemaining = {} WHERE offeringID = " + str(offerid)
     cr.execute( query.format(qtremaining))
     mydb.commit()
-    Nquery = " UPDATE need SET isActive = 0, QuantityRemaining = 0 WHERE needID = " + str(needid)
+    Nquery = " UPDATE need SET Matched = 1, QuantityRemaining = 0 WHERE needID = " + str(needid)
     cr.execute( Nquery)
     mydb.commit()
 
