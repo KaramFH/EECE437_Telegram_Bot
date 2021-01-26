@@ -207,7 +207,7 @@ def done(update: Update, context: CallbackContext) -> int:
 ###########################################################################################################################################################
 # UPDATE COMMAND
 ###########################################################################################################################################################
-# this command will allow the user to update the information about themselves.
+# this command will allow the user to update the information about themselves  .
 # the user can update the information about himself only if he completed the start phase
 
 def update(update: Update, context: CallbackContext) -> int:
@@ -270,7 +270,7 @@ def nothing_to_update(Update: Update, context: CallbackContext) -> int:
     return ConversationHandler.END
 
 ###########################################################################################################################################################
-# RECORDING OFFER
+# RECORDING OFFERs
 ###########################################################################################################################################################
 
 def donation_type(update: Update, context: CallbackContext) -> int:

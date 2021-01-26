@@ -343,7 +343,7 @@ def create_update_need_handler():
 #         fallbacks=[MessageHandler(Filters.regex('^Done$'), done)],
 #     )
 #     return cancel_handler
-
+# not all handlers are used
 def create_confirm_delivery_handler():
     
     confirm_delivery_handler = ConversationHandler(

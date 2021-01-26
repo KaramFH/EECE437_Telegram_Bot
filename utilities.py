@@ -77,6 +77,7 @@ def get_need_full_info(need_id):
     need_full_info = [quantityamount, description, user_need_lati, user_need_long , typename]
     return need_full_info
 
+
 def Offer_isMatched( offerid ) -> bool:                 # check if there are any needs matched with this offer
 
     offering_query = "SELECT needID FROM donationlog WHERE offeringID = " + str(offerid)
@@ -339,7 +340,7 @@ def cancel_delivery_assigned(needID,userid) :
     print("assigned delivery canceled :(")
 
 
-def DeliveredNeeds_receivers() :        # return list of tuples = [ (chatID , 'Need description), (ChatID , 'Need description')]
+def DeliveredNeeds_receivers() :        # return a list of tuples = [ (chatID , 'Need description), (ChatID , 'Need description')]
 
     dict = []
     query = "SELECT userID, description from need WHERE IsActive = 1 and confirmed =0  "         # get needs set as delivered, and get userIDs to confirm that they received
